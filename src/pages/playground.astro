@@ -1,0 +1,226 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout
+  title="Playground — ppmlx"
+  description="Interactive API playground and compatibility tester for ppmlx."
+>
+  <Nav />
+  <main class="playground-page">
+    <section class="hero-section">
+      <h1>API Playground</h1>
+      <p class="subtitle">
+        Test your local ppmlx server interactively. Requires <code>ppmlx serve</code> running on your machine.
+      </p>
+    </section>
+
+    <section class="playground-container">
+      <div class="config-panel">
+        <label for="server-url">Server URL</label>
+        <input type="text" id="server-url" value="http://localhost:6767" />
+
+        <label for="model-select">Model</label>
+        <select id="model-select">
+          <option value="">Loading models...</option>
+        </select>
+
+        <label for="temperature">Temperature</label>
+        <input type="range" id="temperature" min="0" max="2" step="0.1" value="0.7" />
+        <span id="temp-value">0.7</span>
+
+        <label for="max-tokens">Max tokens</label>
+        <input type="number" id="max-tokens" value="2048" min="1" max="32768" />
+
+        <button id="run-compat" class="btn secondary">Run compatibility tests</button>
+      </div>
+
+      <div class="request-panel">
+        <h3>Request</h3>
+        <textarea id="request-body" rows="12" spellcheck="false" set:text={'{\n  "model": "",\n  "messages": [\n    {"role": "user", "content": "Hello!"}\n  ],\n  "stream": false\n}'}></textarea>
+        <button id="send-btn" class="btn primary">Send request</button>
+      </div>
+
+      <div class="response-panel">
+        <h3>Response</h3>
+        <pre id="response-output">// Response will appear here</pre>
+      </div>
+    </section>
+
+    <section class="compat-results" id="compat-results" style="display:none">
+      <h2>Compatibility test results</h2>
+      <table id="compat-table"></table>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .playground-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  .hero-section {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .hero-section h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .subtitle {
+    color: #888;
+    font-size: 1.1rem;
+  }
+  .subtitle code {
+    background: #1a1a2e;
+    padding: 0.2em 0.5em;
+    border-radius: 4px;
+    font-size: 0.9rem;
+  }
+  .playground-container {
+    display: grid;
+    grid-template-columns: 250px 1fr 1fr;
+    gap: 1rem;
+  }
+  .config-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .config-panel label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+  }
+  .config-panel input, .config-panel select {
+    padding: 0.4rem;
+    border: 1px solid #333;
+    border-radius: 4px;
+    background: #1a1a2e;
+    color: #eee;
+  }
+  .request-panel, .response-panel {
+    display: flex;
+    flex-direction: column;
+  }
+  textarea {
+    flex: 1;
+    font-family: monospace;
+    font-size: 0.85rem;
+    padding: 0.75rem;
+    border: 1px solid #333;
+    border-radius: 4px;
+    background: #1a1a2e;
+    color: #eee;
+    resize: vertical;
+  }
+  pre {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid #333;
+    border-radius: 4px;
+    background: #1a1a2e;
+    color: #eee;
+    overflow: auto;
+    font-size: 0.85rem;
+    white-space: pre-wrap;
+    min-height: 200px;
+  }
+  .btn {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 0.5rem;
+  }
+  .btn.primary {
+    background: #6c5ce7;
+    color: white;
+  }
+  .btn.secondary {
+    background: #2d3436;
+    color: #dfe6e9;
+    border: 1px solid #636e72;
+  }
+  .compat-results {
+    margin-top: 2rem;
+  }
+  .compat-results table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .compat-results td, .compat-results th {
+    padding: 0.5rem;
+    border: 1px solid #333;
+    text-align: left;
+  }
+
+  @media (max-width: 768px) {
+    .playground-container {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  const serverUrl = document.getElementById('server-url');
+  const modelSelect = document.getElementById('model-select');
+  const tempSlider = document.getElementById('temperature');
+  const tempValue = document.getElementById('temp-value');
+  const maxTokens = document.getElementById('max-tokens');
+  const requestBody = document.getElementById('request-body');
+  const responseOutput = document.getElementById('response-output');
+  const sendBtn = document.getElementById('send-btn');
+
+  tempSlider.addEventListener('input', () => {
+    tempValue.textContent = tempSlider.value;
+  });
+
+  async function loadModels() {
+    try {
+      const res = await fetch(`${serverUrl.value}/v1/models`);
+      const data = await res.json();
+      modelSelect.innerHTML = data.data
+        .map((m) => `<option value="${m.id}">${m.id}</option>`)
+        .join('');
+      updateRequestBody();
+    } catch (e) {
+      modelSelect.innerHTML = '<option value="">Cannot connect to server</option>';
+    }
+  }
+
+  function updateRequestBody() {
+    try {
+      const body = JSON.parse(requestBody.value);
+      body.model = modelSelect.value;
+      body.temperature = parseFloat(tempSlider.value);
+      body.max_tokens = parseInt(maxTokens.value);
+      requestBody.value = JSON.stringify(body, null, 2);
+    } catch (e) { /* ignore parse errors */ }
+  }
+
+  modelSelect.addEventListener('change', updateRequestBody);
+
+  sendBtn.addEventListener('click', async () => {
+    responseOutput.textContent = '// Sending...';
+    try {
+      const res = await fetch(`${serverUrl.value}/v1/chat/completions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: requestBody.value,
+      });
+      const data = await res.json();
+      responseOutput.textContent = JSON.stringify(data, null, 2);
+    } catch (e) {
+      responseOutput.textContent = `// Error: ${e}`;
+    }
+  });
+
+  serverUrl.addEventListener('change', loadModels);
+  loadModels();
+</script>

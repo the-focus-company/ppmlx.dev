@@ -1,0 +1,228 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout
+  title="Chat — ppmlx"
+  description="Web chat interface for your local ppmlx server."
+>
+  <Nav />
+  <main class="chat-page">
+    <div class="topbar">
+      <select id="model-select" title="Select model">
+        <option value="">Loading...</option>
+      </select>
+      <input type="text" id="server-url" value="http://localhost:6767" placeholder="Server URL" />
+      <button id="clear-btn" title="Clear chat">Clear</button>
+    </div>
+
+    <div class="chat-area" id="chat-area">
+      <div class="empty-state">
+        <h2>ppmlx Chat</h2>
+        <p>Connect to your local ppmlx server and start chatting.</p>
+        <p class="hint">Make sure <code>ppmlx serve</code> is running.</p>
+      </div>
+    </div>
+
+    <div class="input-area">
+      <textarea id="user-input" placeholder="Type a message..." rows="2"></textarea>
+      <button id="send-btn" class="send-btn">Send</button>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .chat-page {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 60px);
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .topbar {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #333;
+    align-items: center;
+  }
+  .topbar select, .topbar input {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid #333;
+    border-radius: 4px;
+    background: #1a1a2e;
+    color: #eee;
+    font-size: 0.85rem;
+  }
+  .topbar select { flex: 1; }
+  .topbar input { width: 250px; }
+  .topbar button {
+    padding: 0.4rem 0.8rem;
+    background: #2d3436;
+    color: #dfe6e9;
+    border: 1px solid #636e72;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .chat-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+  }
+  .empty-state {
+    text-align: center;
+    color: #888;
+    margin-top: 20vh;
+  }
+  .empty-state code {
+    background: #1a1a2e;
+    padding: 0.2em 0.5em;
+    border-radius: 4px;
+  }
+  .hint { font-size: 0.85rem; color: #666; }
+  .message {
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    max-width: 80%;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  .message.user {
+    background: #6c5ce7;
+    color: white;
+    margin-left: auto;
+  }
+  .message.assistant {
+    background: #1a1a2e;
+    color: #eee;
+    border: 1px solid #333;
+  }
+  .input-area {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-top: 1px solid #333;
+  }
+  .input-area textarea {
+    flex: 1;
+    padding: 0.6rem;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background: #1a1a2e;
+    color: #eee;
+    font-family: inherit;
+    font-size: 0.95rem;
+    resize: none;
+  }
+  .send-btn {
+    padding: 0.6rem 1.5rem;
+    background: #6c5ce7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+</style>
+
+<script>
+  const chatArea = document.getElementById('chat-area');
+  const userInput = document.getElementById('user-input');
+  const sendBtn = document.getElementById('send-btn');
+  const clearBtn = document.getElementById('clear-btn');
+  const modelSelect = document.getElementById('model-select');
+  const serverUrlInput = document.getElementById('server-url');
+
+  let messages = [];
+
+  async function loadModels() {
+    try {
+      const res = await fetch(`${serverUrlInput.value}/v1/models`);
+      const data = await res.json();
+      modelSelect.innerHTML = data.data
+        .map((m) => `<option value="${m.id}">${m.id}</option>`)
+        .join('');
+    } catch (e) {
+      modelSelect.innerHTML = '<option value="">Cannot connect</option>';
+    }
+  }
+
+  function addMessage(role, content) {
+    const emptyState = chatArea.querySelector('.empty-state');
+    if (emptyState) emptyState.remove();
+
+    const div = document.createElement('div');
+    div.className = `message ${role}`;
+    div.textContent = content;
+    chatArea.appendChild(div);
+    chatArea.scrollTop = chatArea.scrollHeight;
+  }
+
+  async function sendMessage() {
+    const content = userInput.value.trim();
+    if (!content) return;
+
+    messages.push({ role: 'user', content });
+    addMessage('user', content);
+    userInput.value = '';
+
+    const assistantDiv = document.createElement('div');
+    assistantDiv.className = 'message assistant';
+    assistantDiv.textContent = '...';
+    chatArea.appendChild(assistantDiv);
+
+    try {
+      const res = await fetch(`${serverUrlInput.value}/v1/chat/completions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: modelSelect.value,
+          messages,
+          stream: true,
+        }),
+      });
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let fullText = '';
+      assistantDiv.textContent = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value);
+        for (const line of chunk.split('\n')) {
+          if (!line.startsWith('data: ') || line === 'data: [DONE]') continue;
+          try {
+            const data = JSON.parse(line.slice(6));
+            const delta = data.choices?.[0]?.delta?.content || '';
+            fullText += delta;
+            assistantDiv.textContent = fullText;
+            chatArea.scrollTop = chatArea.scrollHeight;
+          } catch (e) { /* skip */ }
+        }
+      }
+      messages.push({ role: 'assistant', content: fullText });
+    } catch (e) {
+      assistantDiv.textContent = `Error: ${e}`;
+    }
+  }
+
+  sendBtn.addEventListener('click', sendMessage);
+  userInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+  clearBtn.addEventListener('click', () => {
+    messages = [];
+    chatArea.innerHTML = '<div class="empty-state"><h2>ppmlx Chat</h2><p>Start a new conversation.</p></div>';
+  });
+  serverUrlInput.addEventListener('change', loadModels);
+  loadModels();
+</script>
