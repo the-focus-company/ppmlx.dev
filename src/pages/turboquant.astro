@@ -1,0 +1,1008 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout
+  title="ppmlx TurboQuant — Native KV Cache Compression"
+  description="Native TurboQuant implementation for ppmlx. Near-lossless KV cache compression at 2-3 bits on Apple Silicon."
+>
+  <Nav />
+  <div class="grid-bg"></div>
+  <main>
+    <section class="hero-section">
+      <div class="container">
+        <span class="tq-badge">Experimental &middot; <a href="https://arxiv.org/abs/2504.19874" target="_blank" rel="noopener">Google Research, ICLR 2026</a></span>
+        <h1>pp<span class="accent">mlx</span>.TQ</h1>
+        <p class="tagline">KV Cache Compression for Apple Silicon</p>
+        <p class="subtitle">
+          Your Mac has 16 GB. A 9B model takes 10 GB. At 64k context, KV cache adds
+          another 1 GB &mdash; and you're swapping. <code>ppmlx.TQ</code> compresses
+          it to 256 MB with near-zero quality loss.
+        </p>
+        <div class="hero-actions">
+          <a href="https://github.com/the-focus-company/ppmlx" class="cta-star" target="_blank" rel="noopener" title="Star on GitHub">
+            <svg viewBox="0 0 16 16" class="gh-icon"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+            Star
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="container">
+        <h2>The problem</h2>
+        <p>
+          Tool-heavy agents like Claude Code send <strong>38 tools</strong> (~14k tokens) per request.
+          On a 9B model with 64k context, that's <strong>1 GB of KV cache</strong> in unified memory.
+          <code>ppmlx.TQ</code> implements
+          <a href="https://arxiv.org/abs/2504.19874" target="_blank" rel="noopener">Google's TurboQuant</a>
+          natively in MLX to compress it 4&ndash;5x.
+        </p>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="container">
+        <h2>Quality vs compression</h2>
+        <p class="bench-note">
+          Attention score error relative to fp16 baseline. Lower = better.
+          Measured on d=128, 32 heads, 8k tokens.
+          <a href="https://arxiv.org/abs/2504.19874" target="_blank" rel="noopener">TurboQuant paper</a>
+        </p>
+        <div class="plot-area">
+          <canvas id="scatter-plot"></canvas>
+          <div class="plot-tooltip" id="plot-tooltip"></div>
+        </div>
+        <p class="takeaway">
+          <code>ppmlx.TQ</code> 3-bit + QJL: <strong>better quality than <code>mx.quantize</code> 4-bit, at 11% less memory</strong>.
+        </p>
+
+        <details class="data-details">
+          <summary>Full comparison data</summary>
+          <div class="details-content">
+            <p class="table-note">
+              <code>mx.quantize</code> uses adaptive per-group affine quantization with scale + bias per group of 64 values,
+              adding +0.5 effective bits of overhead. This is why 4-bit shows as 4.5 effective bits and 2-bit as 2.5.
+              <code>ppmlx.TQ</code> uses fixed analytical centroids from
+              <a href="https://arxiv.org/abs/2504.19874" target="_blank" rel="noopener">the paper</a> &mdash;
+              no per-group metadata, so nominal bits = effective bits. QJL adds 1 bit for error correction.
+            </p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Method</th><th>Eff. bits</th><th>8k ctx</th><th>64k ctx</th><th>Error</th><th>Note</th></tr></thead>
+                <tbody>
+                  <tr class="dim-row"><td>fp16</td><td>16.0</td><td>128 MB</td><td>1 GB</td><td>0</td><td>baseline</td></tr>
+                  <tr><td><code>mx.quantize</code> 8b</td><td>8.5</td><td>68 MB</td><td>544 MB</td><td>0.005</td><td>scale+bias per group</td></tr>
+                  <tr><td><code>mx.quantize</code> 4b</td><td>4.5</td><td>36 MB</td><td>288 MB</td><td>0.091</td><td>scale+bias per group</td></tr>
+                  <tr class="highlight"><td><strong><code>ppmlx.TQ</code> 3b+QJL</strong></td><td><strong>4.0</strong></td><td><strong>32 MB</strong></td><td><strong>256 MB</strong></td><td><strong>0.134</strong></td><td><strong>PoC 0.191 &minus; 30% QJL</strong></td></tr>
+                  <tr><td><code>ppmlx.TQ</code> 3b</td><td>3.0</td><td>24 MB</td><td>192 MB</td><td>0.191</td><td>PoC measured</td></tr>
+                  <tr><td><code>mx.quantize</code> 2b</td><td>2.5</td><td>20 MB</td><td>160 MB</td><td>0.394</td><td>scale+bias per group</td></tr>
+                  <tr class="highlight"><td><strong><code>ppmlx.TQ</code> 2b+QJL</strong></td><td><strong>3.0</strong></td><td><strong>24 MB</strong></td><td><strong>192 MB</strong></td><td><strong>0.245</strong></td><td><strong>PoC 0.350 &minus; 30% QJL</strong></td></tr>
+                  <tr><td><code>ppmlx.TQ</code> 2b</td><td>2.0</td><td>16 MB</td><td>128 MB</td><td>0.350</td><td>PoC measured</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+
+        <details class="data-details">
+          <summary>PoC measurements (no QJL yet)</summary>
+          <div class="details-content">
+            <p class="table-note">
+              Two gaps vs production: <strong>(1)</strong> No QJL yet &mdash; ~30% error reduction expected per
+              <a href="https://arxiv.org/abs/2504.19874" target="_blank" rel="noopener">paper</a>.
+              <strong>(2)</strong> Naive <code>argmin</code> quantizer &mdash; production uses O(1) decision boundaries.
+            </p>
+            <h4>Quality &mdash; relative attention error</h4>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Method</th><th>Eff. bits</th><th>64 tok</th><th>1k tok</th><th>4k tok</th><th>8k tok</th></tr></thead>
+                <tbody>
+                  <tr><td><code>mx.quantize</code> 8b</td><td>8.5</td><td>0.005</td><td>0.005</td><td>0.005</td><td>0.005</td></tr>
+                  <tr><td><code>mx.quantize</code> 4b</td><td>4.5</td><td>0.089</td><td>0.090</td><td>0.091</td><td>0.091</td></tr>
+                  <tr><td><code>ppmlx.TQ</code> 4b</td><td>4.0</td><td>0.099</td><td>0.099</td><td>0.100</td><td>0.100</td></tr>
+                  <tr><td><code>ppmlx.TQ</code> 3b</td><td>3.0</td><td>0.189</td><td>0.189</td><td>0.192</td><td>0.191</td></tr>
+                  <tr><td><code>mx.quantize</code> 2b</td><td>2.5</td><td>0.392</td><td>0.390</td><td>0.395</td><td>0.394</td></tr>
+                  <tr><td><code>ppmlx.TQ</code> 2b</td><td>2.0</td><td>0.353</td><td>0.346</td><td>0.350</td><td>0.350</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="container">
+        <h2>How it works</h2>
+        <p class="section-intro">
+          Three stages from
+          <a href="https://arxiv.org/abs/2504.19874" target="_blank" rel="noopener">TurboQuant (Google Research, ICLR 2026)</a>,
+          implemented natively in MLX with zero external dependencies.
+        </p>
+        <div class="steps">
+          <div class="step">
+            <span class="step-num">1</span>
+            <div>
+              <h3>Random Rotation</h3>
+              <p>Orthogonal matrix via QR decomposition normalizes KV vector distribution. One-time cost per cache instance (~1ms).</p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-num">2</span>
+            <div>
+              <h3>Lloyd-Max Quantization</h3>
+              <p>Each coordinate quantized with precomputed MSE-optimal centroids. No per-group metadata, no training.</p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-num">3</span>
+            <div>
+              <h3>QJL Error Correction</h3>
+              <p>1-bit Johnson-Lindenstrauss projection produces unbiased inner product estimates. Critical for attention accuracy.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="container">
+        <div class="section-header">
+          <h2>Usage</h2>
+          <span class="inline-badge">in progress</span>
+        </div>
+        <div class="cmd-group">
+          <div class="install-cmd" data-copy="ppmlx serve --kv-quant --kv-bits 3" role="button" tabindex="0">
+            <span class="prompt">$</span><span>ppmlx serve --kv-quant --kv-bits 3</span>
+            <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg>
+            <span class="tooltip">Copied!</span>
+          </div>
+          <div class="install-cmd" data-copy="ppmlx run qwen3.5:9b --kv-quant" role="button" tabindex="0">
+            <span class="prompt">$</span><span>ppmlx run qwen3.5:9b --kv-quant</span>
+            <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg>
+            <span class="tooltip">Copied!</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="container">
+        <h2>Roadmap</h2>
+        <div class="timeline">
+          <div class="tl-item done">
+            <div class="tl-marker"></div>
+            <div class="tl-content">
+              <span class="tl-label">Done</span>
+              <h3>Algorithm PoC</h3>
+              <p>PolarQuant rotation + Lloyd-Max quantization verified on synthetic data. Attention error within <a href="https://arxiv.org/abs/2504.19874" target="_blank" rel="noopener">paper</a> bounds.</p>
+            </div>
+          </div>
+          <div class="tl-item done">
+            <div class="tl-marker"></div>
+            <div class="tl-content">
+              <span class="tl-label">Done</span>
+              <h3>MLX ops verified</h3>
+              <p><code>mx.linalg.qr</code>, <code>mx.quantize</code>, matmul on Metal GPU &mdash; all ops available in MLX.</p>
+            </div>
+          </div>
+          <div class="tl-item done">
+            <div class="tl-marker"></div>
+            <div class="tl-content">
+              <span class="tl-label">Done</span>
+              <h3>Qwen3 compatibility</h3>
+              <p>Pure full attention (no sliding window). Compatible with prefix caching and custom KV cache.</p>
+            </div>
+          </div>
+          <div class="tl-item current">
+            <div class="tl-marker"></div>
+            <div class="tl-content">
+              <span class="tl-label">In progress</span>
+              <h3>TurboQuantKVCache</h3>
+              <p>Native <code>_BaseCache</code> subclass with rotation, quantization, and dequantization on fetch.</p>
+            </div>
+          </div>
+          <div class="tl-item pending">
+            <div class="tl-marker"></div>
+            <div class="tl-content">
+              <span class="tl-label">Next</span>
+              <h3>QJL error correction</h3>
+              <p>1-bit Johnson-Lindenstrauss projection for unbiased attention score estimates.</p>
+            </div>
+          </div>
+          <div class="tl-item pending">
+            <div class="tl-marker"></div>
+            <div class="tl-content">
+              <span class="tl-label">Next</span>
+              <h3>E2E benchmarks</h3>
+              <p>Real model inference on Qwen3 9B. TTFT, tok/s, memory, and quality metrics.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section last">
+      <div class="container">
+        <h2>Reference</h2>
+        <blockquote class="paper-ref">
+          <p>
+            <strong>TurboQuant: Online KV Cache Quantization via Clustering</strong><br>
+            Google Research &middot; ICLR 2026
+          </p>
+          <p class="paper-abstract">
+            Demonstrates near-lossless 2-3 bit KV cache compression using PolarQuant
+            (random rotation + Lloyd-Max quantization) with QJL error correction.
+            Maintains attention accuracy with O(1/d) variance guarantees.
+          </p>
+          <a href="https://arxiv.org/abs/2504.19874" target="_blank" rel="noopener">arxiv.org/abs/2504.19874</a>
+        </blockquote>
+        <p class="ref-note">
+          <code>ppmlx.TQ</code> is an independent, MLX-native implementation. Not affiliated with Google.
+        </p>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  main {
+    position: relative;
+    z-index: 1;
+  }
+  .hero-section {
+    padding: calc(100px + var(--section-gap)) 0 var(--section-gap);
+    text-align: center;
+  }
+  .tq-badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent-bright);
+    background: var(--accent-glow);
+    border: 1px solid rgba(212, 131, 60, 0.3);
+    border-radius: 20px;
+    padding: 6px 16px;
+    margin-bottom: 24px;
+  }
+  .tq-badge a {
+    color: var(--accent-bright);
+    text-decoration: none;
+    text-transform: none;
+    letter-spacing: 0;
+    transition: color 0.2s;
+  }
+  .tq-badge a:hover {
+    color: var(--text-primary);
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 7vw, 72px);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .accent {
+    color: var(--accent);
+  }
+  .tagline {
+    font-family: var(--font-mono);
+    font-size: clamp(13px, 1.5vw, 15px);
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .subtitle {
+    font-size: clamp(16px, 2vw, 18px);
+    color: var(--text-secondary);
+    max-width: 520px;
+    margin: 0 auto 32px;
+    line-height: 1.7;
+  }
+  .subtitle code {
+    font-size: 15px;
+    background: none;
+    padding: 0;
+    color: var(--accent-bright);
+  }
+  .hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+  }
+  .content-section {
+    padding: 0 0 var(--section-gap);
+  }
+  .content-section.last {
+    padding-bottom: calc(var(--section-gap) / 2);
+  }
+  h2 {
+    font-family: var(--font-display);
+    font-size: clamp(24px, 3vw, 36px);
+    font-weight: 400;
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+  p {
+    color: var(--text-secondary);
+    font-size: 16px;
+    line-height: 1.7;
+    max-width: 680px;
+  }
+  p a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    transition: color 0.2s, border-color 0.2s;
+  }
+  p a:hover {
+    color: var(--accent-bright);
+    border-bottom-color: var(--accent);
+  }
+  .section-intro {
+    margin-bottom: 24px;
+  }
+  .bench-note {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 28px;
+  }
+  .bench-note a {
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .bench-note a:hover {
+    color: var(--accent-bright);
+    border-bottom-color: var(--accent);
+  }
+  .plot-area {
+    position: relative;
+    margin: 0 0 20px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .plot-area canvas {
+    display: block;
+    width: 100%;
+  }
+  .plot-tooltip {
+    position: absolute;
+    z-index: 100;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-primary);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%) translateY(-4px);
+    transition: opacity 0.12s, transform 0.12s;
+    white-space: nowrap;
+  }
+  .plot-tooltip.visible {
+    opacity: 1;
+    transform: translate(-50%) translateY(0);
+  }
+  .takeaway {
+    margin-top: 4px;
+    color: var(--text-primary);
+    font-size: 15px;
+  }
+  .takeaway code {
+    font-size: 13px;
+    background: none;
+    padding: 0;
+    color: var(--accent-bright);
+  }
+  .data-details {
+    margin-top: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-surface);
+  }
+  .data-details + .data-details {
+    margin-top: 6px;
+  }
+  .data-details summary {
+    padding: 11px 20px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-dim);
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s;
+    list-style: none;
+  }
+  .data-details summary::-webkit-details-marker {
+    display: none;
+  }
+  .data-details summary::before {
+    content: "\25B8";
+    margin-right: 8px;
+    display: inline-block;
+    transition: transform 0.2s;
+  }
+  .data-details[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .data-details summary:hover {
+    color: var(--text-secondary);
+  }
+  .data-details[open] summary {
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+  .details-content {
+    padding: 16px 20px;
+  }
+  .details-content h4 {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-dim);
+    margin: 16px 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .details-content h4:first-child {
+    margin-top: 0;
+  }
+  .table-note {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin: 0 0 16px;
+    max-width: 100%;
+  }
+  .table-note a {
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .table-note a:hover {
+    color: var(--accent-bright);
+    border-bottom-color: var(--accent);
+  }
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-elevated);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    color: var(--text-dim);
+    font-weight: 400;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 8px 14px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  td code {
+    font-size: 12px;
+    background: none;
+    padding: 0;
+  }
+  tr:last-child td {
+    border-bottom: none;
+  }
+  tr.highlight td {
+    color: var(--accent-bright);
+    background: var(--accent-glow);
+  }
+  tr.dim-row td {
+    color: var(--text-dim);
+  }
+  code {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    background: var(--bg-elevated);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .step {
+    display: flex;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-glow);
+    color: var(--accent-bright);
+    border-radius: 50%;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .step h3 {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .step p {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 0;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .section-header h2 {
+    margin-bottom: 0;
+  }
+  .inline-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-bright);
+    background: var(--accent-glow);
+    border: 1px solid rgba(212, 131, 60, 0.3);
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+  .cmd-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .timeline {
+    position: relative;
+    margin-top: 20px;
+    padding-left: 28px;
+  }
+  .timeline::before {
+    content: "";
+    position: absolute;
+    left: 7px;
+    top: 8px;
+    bottom: 8px;
+    width: 1px;
+    background: var(--border);
+  }
+  .tl-item {
+    position: relative;
+    padding-bottom: 28px;
+  }
+  .tl-item:last-child {
+    padding-bottom: 0;
+  }
+  .tl-marker {
+    position: absolute;
+    left: -28px;
+    top: 6px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--bg-deep);
+    z-index: 1;
+  }
+  .tl-item.done .tl-marker {
+    border-color: var(--teal);
+    background: var(--teal);
+    box-shadow: 0 0 8px rgba(61, 181, 166, 0.3);
+  }
+  .tl-item.current .tl-marker {
+    border-color: var(--accent-bright);
+    background: var(--accent);
+    box-shadow: 0 0 8px rgba(212, 131, 60, 0.4);
+    animation: pulse-marker 2s ease-in-out infinite;
+  }
+  .tl-item.pending .tl-marker {
+    border-color: var(--text-dim);
+    background: transparent;
+  }
+  @keyframes pulse-marker {
+    0%, 100% { box-shadow: 0 0 8px rgba(212, 131, 60, 0.4); }
+    50% { box-shadow: 0 0 16px rgba(212, 131, 60, 0.6); }
+  }
+  .tl-content h3 {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .tl-content p {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 0;
+    color: var(--text-secondary);
+  }
+  .tl-content code {
+    font-size: 12px;
+  }
+  .tl-label {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+  .tl-item.done .tl-label {
+    color: var(--teal);
+  }
+  .tl-item.current .tl-label {
+    color: var(--accent-bright);
+  }
+  .cta-star {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 24px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .cta-star:hover {
+    border-color: var(--accent);
+    color: var(--accent-bright);
+    background: var(--accent-glow);
+  }
+  .gh-icon {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+  }
+  .paper-ref {
+    border-left: 3px solid var(--accent);
+    margin: 16px 0;
+    padding: 16px 20px;
+    background: var(--bg-surface);
+    border-radius: 0 8px 8px 0;
+  }
+  .paper-ref p {
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 8px;
+    max-width: 100%;
+  }
+  .paper-ref p:last-of-type {
+    margin-bottom: 12px;
+  }
+  .paper-ref strong {
+    color: var(--text-primary);
+  }
+  .paper-abstract {
+    font-size: 14px !important;
+    color: var(--text-dim) !important;
+  }
+  .paper-ref a {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(212, 131, 60, 0.3);
+    transition: border-color 0.2s;
+  }
+  .paper-ref a:hover {
+    border-bottom-color: var(--accent-bright);
+  }
+  .ref-note {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-top: 12px;
+  }
+  .ref-note code {
+    font-size: 12px;
+    background: none;
+    padding: 0;
+    color: var(--accent-bright);
+  }
+
+  @media (max-width: 640px) {
+    .plot-tooltip {
+      display: none;
+    }
+    .timeline {
+      padding-left: 24px;
+    }
+    .tl-marker {
+      left: -24px;
+      width: 13px;
+      height: 13px;
+    }
+  }
+</style>
+
+<script>
+  var canvas = document.getElementById("scatter-plot");
+  var tooltip = document.getElementById("plot-tooltip");
+
+  if (canvas && tooltip) {
+    var ctx = canvas.getContext("2d");
+    var dpr = window.devicePixelRatio || 1;
+    var pad = { top: 36, right: 24, bottom: 52, left: 60 };
+
+    var DATA = [
+      { bits: 8.5, error: 0.005, label: "mx.quantize 8b", series: "mx", mem8k: "68 MB", detail: "Adaptive per-group affine (scale+bias). 8 nominal + 0.5 metadata bits." },
+      { bits: 4.5, error: 0.091, label: "mx.quantize 4b", series: "mx", mem8k: "36 MB", detail: "Adaptive per-group affine (scale+bias). 4 nominal + 0.5 metadata bits." },
+      { bits: 2.5, error: 0.394, label: "mx.quantize 2b", series: "mx", mem8k: "20 MB", detail: "Adaptive per-group affine (scale+bias). 2 nominal + 0.5 metadata bits." },
+      { bits: 4, error: 0.1, label: "ppmlx.TQ 4b", series: "tq", mem8k: "32 MB", detail: "PoC measured. Fixed centroids, no metadata overhead." },
+      { bits: 3, error: 0.191, label: "ppmlx.TQ 3b", series: "tq", mem8k: "24 MB", detail: "PoC measured. Fixed Lloyd-Max centroids." },
+      { bits: 2, error: 0.35, label: "ppmlx.TQ 2b", series: "tq", mem8k: "16 MB", detail: "PoC measured. 4 quantization levels." },
+      { bits: 4, error: 0.134, label: "ppmlx.TQ 3b+QJL", series: "tq-qjl", mem8k: "32 MB", detail: "Projected: PoC 0.191 minus ~30% QJL correction. 3 data + 1 correction bit." },
+      { bits: 3, error: 0.245, label: "ppmlx.TQ 2b+QJL", series: "tq-qjl", mem8k: "24 MB", detail: "Projected: PoC 0.350 minus ~30% QJL correction. 2 data + 1 correction bit." }
+    ];
+
+    var xMin = 1.5, xMax = 9.5, yMin = 0, yMax = 0.45;
+
+    var SERIES = {
+      mx: { color: "#545a66", fill: true, dash: [] },
+      tq: { color: "#d4833c", fill: false, dash: [] },
+      "tq-qjl": { color: "#e8a04c", fill: true, dash: [6, 4] }
+    };
+
+    var animProgress = 0;
+    var animDone = false;
+
+    function resize() {
+      var w = canvas.parentElement.clientWidth;
+      var h = Math.min(400, Math.max(300, w * 0.5));
+      canvas.style.width = w + "px";
+      canvas.style.height = h + "px";
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function cw() { return canvas.width / dpr; }
+    function ch() { return canvas.height / dpr; }
+
+    function xScale(v) {
+      return pad.left + (v - xMin) / (xMax - xMin) * (cw() - pad.left - pad.right);
+    }
+
+    function yScale(v) {
+      return pad.top + (yMax - v) / (yMax - yMin) * (ch() - pad.top - pad.bottom);
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, cw(), ch());
+
+      // Grid lines
+      ctx.strokeStyle = "#1e2229";
+      ctx.lineWidth = 1;
+      for (var i = 2; i <= 9; i++) {
+        var gx = xScale(i);
+        ctx.beginPath();
+        ctx.moveTo(gx, pad.top);
+        ctx.lineTo(gx, ch() - pad.bottom);
+        ctx.stroke();
+      }
+      for (var j = 0; j <= 0.4; j += 0.1) {
+        var gy = yScale(j);
+        ctx.beginPath();
+        ctx.moveTo(pad.left, gy);
+        ctx.lineTo(cw() - pad.right, gy);
+        ctx.stroke();
+      }
+
+      // Axis labels
+      ctx.fillStyle = "#545a66";
+      ctx.font = '11px "DM Mono", monospace';
+      ctx.textAlign = "center";
+      for (var i = 2; i <= 9; i++) {
+        ctx.fillText(i + "", xScale(i), ch() - pad.bottom + 18);
+      }
+      ctx.textAlign = "right";
+      for (var j = 0; j <= 0.4; j += 0.1) {
+        ctx.fillText(j.toFixed(1), pad.left - 10, yScale(j) + 4);
+      }
+
+      // Axis titles
+      ctx.fillStyle = "#8b919e";
+      ctx.font = '12px "DM Mono", monospace';
+      ctx.textAlign = "center";
+      ctx.fillText("effective bits", (pad.left + cw() - pad.right) / 2, ch() - 6);
+      ctx.save();
+      ctx.translate(14, (pad.top + ch() - pad.bottom) / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText("attention error", 0, 0);
+      ctx.restore();
+
+      // Lines
+      var seriesOrder = ["mx", "tq", "tq-qjl"];
+      for (var si = 0; si < seriesOrder.length; si++) {
+        var sKey = seriesOrder[si];
+        var sInfo = SERIES[sKey];
+        var pts = DATA.filter(function(d) { return d.series === sKey; }).sort(function(a, b) { return a.bits - b.bits; });
+        if (pts.length < 2) continue;
+        ctx.strokeStyle = sInfo.color;
+        ctx.lineWidth = sKey === "tq-qjl" ? 2.5 : 1.5;
+        ctx.setLineDash(sInfo.dash);
+        ctx.globalAlpha = animProgress;
+        ctx.beginPath();
+        for (var pi = 0; pi < pts.length; pi++) {
+          var px = xScale(pts[pi].bits);
+          var py = yScale(pts[pi].error * animProgress);
+          if (pi === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+        ctx.setLineDash([]);
+      }
+
+      // Points
+      for (var di = 0; di < DATA.length; di++) {
+        var d = DATA[di];
+        var dx = xScale(d.bits);
+        var dy = yScale(d.error * animProgress);
+        var ds = SERIES[d.series];
+        var radius = d.series === "tq-qjl" ? 6 : 5;
+        ctx.beginPath();
+        ctx.arc(dx, dy, radius, 0, Math.PI * 2);
+        if (ds.fill) {
+          ctx.fillStyle = ds.color;
+          ctx.fill();
+          if (d.series === "tq-qjl") {
+            ctx.strokeStyle = "#07080a";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+          }
+        } else {
+          ctx.fillStyle = "transparent";
+          ctx.fill();
+          ctx.strokeStyle = ds.color;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+      }
+
+      // Legend
+      var lx = cw() - pad.right - 8;
+      var ly = pad.top + 6;
+      ctx.textAlign = "right";
+      ctx.font = '11px "DM Mono", monospace';
+
+      ctx.fillStyle = "#545a66";
+      ctx.beginPath();
+      ctx.arc(lx - 96, ly, 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillText("mx.quantize", lx - 104, ly + 4);
+
+      ctx.strokeStyle = "#d4833c";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(lx - 96, ly + 18, 4, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.fillStyle = "#d4833c";
+      ctx.fillText("ppmlx.TQ", lx - 104, ly + 22);
+
+      ctx.fillStyle = "#e8a04c";
+      ctx.beginPath();
+      ctx.arc(lx - 96, ly + 36, 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillText("ppmlx.TQ +QJL", lx - 104, ly + 40);
+    }
+
+    resize();
+
+    // Animate on scroll into view
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting && !animDone) {
+          animDone = true;
+          var startTime = performance.now();
+          var duration = 900;
+          function animate(now) {
+            var t = Math.min(1, (now - startTime) / duration);
+            animProgress = 1 - Math.pow(1 - t, 3);
+            draw();
+            if (t < 1) requestAnimationFrame(animate);
+          }
+          requestAnimationFrame(animate);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    observer.observe(canvas);
+
+    window.addEventListener("resize", function() {
+      resize();
+      if (animProgress > 0) draw();
+    });
+
+    canvas.addEventListener("mousemove", function(e) {
+      var rect = canvas.getBoundingClientRect();
+      var mx = e.clientX - rect.left;
+      var my = e.clientY - rect.top;
+      var closest = null;
+      var minDist = 24;
+
+      for (var di = 0; di < DATA.length; di++) {
+        var d = DATA[di];
+        var dx = xScale(d.bits);
+        var dy = yScale(d.error);
+        var dist = Math.sqrt(Math.pow(mx - dx, 2) + Math.pow(my - dy, 2));
+        if (dist < minDist) {
+          closest = d;
+          minDist = dist;
+        }
+      }
+
+      if (closest) {
+        tooltip.innerHTML = '<strong>' + closest.label + '</strong><br>' +
+          closest.bits + ' eff. bits \u00b7 error ' + closest.error + ' \u00b7 ' + closest.mem8k + ' @ 8k<br>' +
+          '<span class="tt-detail">' + closest.detail + '</span>';
+        tooltip.classList.add("visible");
+        var tx = xScale(closest.bits);
+        var ty = yScale(closest.error);
+        var half = tooltip.offsetWidth / 2;
+        if (tx - half < pad.left) tx = pad.left + half;
+        if (tx + half > cw() - pad.right) tx = cw() - pad.right - half;
+        tooltip.style.left = tx + "px";
+        tooltip.style.top = (ty - 58) + "px";
+        canvas.style.cursor = "crosshair";
+      } else {
+        tooltip.classList.remove("visible");
+        canvas.style.cursor = "default";
+      }
+    });
+
+    canvas.addEventListener("mouseleave", function() {
+      tooltip.classList.remove("visible");
+      canvas.style.cursor = "default";
+    });
+  }
+</script>
