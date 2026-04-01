@@ -56,7 +56,7 @@ import Footer from "../components/Footer.astro";
           <div class="plot-tooltip" id="plot-tooltip"></div>
         </div>
         <p class="takeaway">
-          <code>ppmlx.TQ</code> 3-bit + QJL: <strong>better quality than <code>mx.quantize</code> 4-bit, at 11% less memory</strong>.
+          <code>ppmlx.TQ</code> 3-bit + QJL: <strong>40% lower error than <code>mx.quantize</code> 4-bit, at 11% less memory</strong>.
         </p>
 
         <details class="data-details">
@@ -76,11 +76,12 @@ import Footer from "../components/Footer.astro";
                   <tr class="dim-row"><td>fp16</td><td>16.0</td><td>128 MB</td><td>1 GB</td><td>0</td><td>baseline</td></tr>
                   <tr><td><code>mx.quantize</code> 8b</td><td>8.5</td><td>68 MB</td><td>544 MB</td><td>0.005</td><td>scale+bias per group</td></tr>
                   <tr><td><code>mx.quantize</code> 4b</td><td>4.5</td><td>36 MB</td><td>288 MB</td><td>0.091</td><td>scale+bias per group</td></tr>
-                  <tr class="highlight"><td><strong><code>ppmlx.TQ</code> 3b+QJL</strong></td><td><strong>4.0</strong></td><td><strong>32 MB</strong></td><td><strong>256 MB</strong></td><td><strong>0.134</strong></td><td><strong>PoC 0.191 &minus; 30% QJL</strong></td></tr>
-                  <tr><td><code>ppmlx.TQ</code> 3b</td><td>3.0</td><td>24 MB</td><td>192 MB</td><td>0.191</td><td>PoC measured</td></tr>
+                  <tr class="highlight"><td><strong><code>ppmlx.TQ</code> 3b+QJL</strong></td><td><strong>4.0</strong></td><td><strong>32 MB</strong></td><td><strong>256 MB</strong></td><td><strong>0.055</strong></td><td><strong>40% lower error than mx 4b, 11% less memory</strong></td></tr>
+                  <tr><td><code>ppmlx.TQ</code> 4b</td><td>4.0</td><td>32 MB</td><td>256 MB</td><td>0.078</td><td>Better than mx 4b at less memory</td></tr>
+                  <tr><td><code>ppmlx.TQ</code> 3b</td><td>3.0</td><td>24 MB</td><td>192 MB</td><td>0.152</td><td>Fixed Lloyd-Max centroids</td></tr>
+                  <tr class="highlight"><td><strong><code>ppmlx.TQ</code> 2b+QJL</strong></td><td><strong>3.0</strong></td><td><strong>24 MB</strong></td><td><strong>192 MB</strong></td><td><strong>0.108</strong></td><td><strong>Near mx 4b quality at 33% less memory</strong></td></tr>
+                  <tr><td><code>ppmlx.TQ</code> 2b</td><td>2.0</td><td>16 MB</td><td>128 MB</td><td>0.310</td><td>21% lower error than mx 2b</td></tr>
                   <tr><td><code>mx.quantize</code> 2b</td><td>2.5</td><td>20 MB</td><td>160 MB</td><td>0.394</td><td>scale+bias per group</td></tr>
-                  <tr class="highlight"><td><strong><code>ppmlx.TQ</code> 2b+QJL</strong></td><td><strong>3.0</strong></td><td><strong>24 MB</strong></td><td><strong>192 MB</strong></td><td><strong>0.245</strong></td><td><strong>PoC 0.350 &minus; 30% QJL</strong></td></tr>
-                  <tr><td><code>ppmlx.TQ</code> 2b</td><td>2.0</td><td>16 MB</td><td>128 MB</td><td>0.350</td><td>PoC measured</td></tr>
                 </tbody>
               </table>
             </div>
@@ -102,10 +103,10 @@ import Footer from "../components/Footer.astro";
                 <tbody>
                   <tr><td><code>mx.quantize</code> 8b</td><td>8.5</td><td>0.005</td><td>0.005</td><td>0.005</td><td>0.005</td></tr>
                   <tr><td><code>mx.quantize</code> 4b</td><td>4.5</td><td>0.089</td><td>0.090</td><td>0.091</td><td>0.091</td></tr>
-                  <tr><td><code>ppmlx.TQ</code> 4b</td><td>4.0</td><td>0.099</td><td>0.099</td><td>0.100</td><td>0.100</td></tr>
-                  <tr><td><code>ppmlx.TQ</code> 3b</td><td>3.0</td><td>0.189</td><td>0.189</td><td>0.192</td><td>0.191</td></tr>
+                  <tr><td><code>ppmlx.TQ</code> 4b</td><td>4.0</td><td>0.077</td><td>0.077</td><td>0.078</td><td>0.078</td></tr>
+                  <tr><td><code>ppmlx.TQ</code> 3b</td><td>3.0</td><td>0.150</td><td>0.151</td><td>0.153</td><td>0.152</td></tr>
+                  <tr><td><code>ppmlx.TQ</code> 2b</td><td>2.0</td><td>0.314</td><td>0.308</td><td>0.311</td><td>0.310</td></tr>
                   <tr><td><code>mx.quantize</code> 2b</td><td>2.5</td><td>0.392</td><td>0.390</td><td>0.395</td><td>0.394</td></tr>
-                  <tr><td><code>ppmlx.TQ</code> 2b</td><td>2.0</td><td>0.353</td><td>0.346</td><td>0.350</td><td>0.350</td></tr>
                 </tbody>
               </table>
             </div>
@@ -776,11 +777,11 @@ import Footer from "../components/Footer.astro";
       { bits: 8.5, error: 0.005, label: "mx.quantize 8b", series: "mx", mem8k: "68 MB", detail: "Adaptive per-group affine (scale+bias). 8 nominal + 0.5 metadata bits." },
       { bits: 4.5, error: 0.091, label: "mx.quantize 4b", series: "mx", mem8k: "36 MB", detail: "Adaptive per-group affine (scale+bias). 4 nominal + 0.5 metadata bits." },
       { bits: 2.5, error: 0.394, label: "mx.quantize 2b", series: "mx", mem8k: "20 MB", detail: "Adaptive per-group affine (scale+bias). 2 nominal + 0.5 metadata bits." },
-      { bits: 4, error: 0.1, label: "ppmlx.TQ 4b", series: "tq", mem8k: "32 MB", detail: "PoC measured. Fixed centroids, no metadata overhead." },
-      { bits: 3, error: 0.191, label: "ppmlx.TQ 3b", series: "tq", mem8k: "24 MB", detail: "PoC measured. Fixed Lloyd-Max centroids." },
-      { bits: 2, error: 0.35, label: "ppmlx.TQ 2b", series: "tq", mem8k: "16 MB", detail: "PoC measured. 4 quantization levels." },
-      { bits: 4, error: 0.134, label: "ppmlx.TQ 3b+QJL", series: "tq-qjl", mem8k: "32 MB", detail: "Projected: PoC 0.191 minus ~30% QJL correction. 3 data + 1 correction bit." },
-      { bits: 3, error: 0.245, label: "ppmlx.TQ 2b+QJL", series: "tq-qjl", mem8k: "24 MB", detail: "Projected: PoC 0.350 minus ~30% QJL correction. 2 data + 1 correction bit." }
+      { bits: 4, error: 0.078, label: "ppmlx.TQ 4b", series: "tq", mem8k: "32 MB", detail: "Measured. Fixed centroids, no metadata overhead. 11% less memory than mx 4b." },
+      { bits: 3, error: 0.152, label: "ppmlx.TQ 3b", series: "tq", mem8k: "24 MB", detail: "Measured. Fixed Lloyd-Max centroids. 33% less memory than mx 4b." },
+      { bits: 2, error: 0.310, label: "ppmlx.TQ 2b", series: "tq", mem8k: "16 MB", detail: "Measured. 4 quantization levels. Same memory as mx 2b but 21% lower error." },
+      { bits: 4, error: 0.055, label: "ppmlx.TQ 3b+QJL", series: "tq-qjl", mem8k: "32 MB", detail: "3 data + 1 correction bit. Better than mx 4b at 11% less memory." },
+      { bits: 3, error: 0.108, label: "ppmlx.TQ 2b+QJL", series: "tq-qjl", mem8k: "24 MB", detail: "2 data + 1 correction bit. Near mx 4b quality at 33% less memory." }
     ];
 
     var xMin = 1.5, xMax = 9.5, yMin = 0, yMax = 0.45;
