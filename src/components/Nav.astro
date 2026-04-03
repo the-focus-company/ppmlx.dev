@@ -3,7 +3,7 @@ const links = [
   { href: "#demos", label: "CLI", hideOnMobile: true },
   { href: "#benchmarks", label: "Benchmarks", hideOnMobile: true },
   { href: "#features", label: "Features", hideOnMobile: true },
-  { href: "/turboquant", label: "TurboQuant", hideOnMobile: false },
+  { href: "/turboquant", label: "TurboQuant", hideOnMobile: false, badge: "exp" },
 ];
 ---
 
@@ -11,9 +11,9 @@ const links = [
   <div class="container container--wide">
     <a href="/" class="nav-logo">pp<span>mlx</span></a>
     <ul class="nav-links">
-      {links.map(({ href, label, hideOnMobile }) => (
+      {links.map(({ href, label, hideOnMobile, badge }) => (
         <li class={hideOnMobile ? "hide-mobile" : ""}>
-          <a href={href}>{label}</a>
+          <a href={href}>{label}{badge && <span class="nav-badge">{badge}</span>}</a>
         </li>
       ))}
       <li>
@@ -57,6 +57,12 @@ const links = [
   }
   .nav-links a:hover { color: var(--text-primary); }
   .nav-links a:hover::after { transform: scaleX(1); }
+  .nav-badge {
+    display: inline-block; margin-left: 6px; padding: 1px 5px;
+    font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--accent-bright); border: 1px solid var(--accent); border-radius: 3px;
+    vertical-align: middle; line-height: 1.4;
+  }
   .nav-github {
     display: inline-flex; align-items: center; gap: 8px;
     padding: 7px 16px; border: 1px solid var(--border); border-radius: 6px;
