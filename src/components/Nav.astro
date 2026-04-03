@@ -58,10 +58,12 @@ const links = [
   .nav-links a:hover { color: var(--text-primary); }
   .nav-links a:hover::after { transform: scaleX(1); }
   .nav-badge {
-    display: inline-block; margin-left: 6px; padding: 1px 5px;
-    font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em;
-    color: var(--accent-bright); border: 1px solid var(--accent); border-radius: 3px;
-    vertical-align: middle; line-height: 1.4;
+    position: absolute; top: -6px; right: -14px;
+    padding: 1px 4px; font-size: 8px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.4;
+    color: #fff; background: var(--accent); border-radius: 2px;
+    transform: rotate(-12deg);
+    pointer-events: none;
   }
   .nav-github {
     display: inline-flex; align-items: center; gap: 8px;
