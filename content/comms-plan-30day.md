@@ -16,7 +16,7 @@ Two commands to try it:
 uv tool install ppmlx
 ppmlx serve
 
-https://github.com/PingCompany/ppmlx
+https://github.com/the-focus-company/ppmlx
 
 #LocalLLM #AppleSilicon #MLX
 **Media:** Benchmark bar chart (tok/s comparison ppmlx vs Ollama)
@@ -49,7 +49,7 @@ I'm publishing all ppmlx benchmark data and scripts.
 
 No cherry-picking. Ollama actually has faster TTFT on Qwen3.5:9B for short prompts (324ms vs 537ms). I show that too.
 
-Scripts: https://github.com/PingCompany/ppmlx/tree/main/scripts
+Scripts: https://github.com/the-focus-company/ppmlx/tree/main/scripts
 **Media:** Screenshot of terminal running bench_compare.sh output
 
 ---
@@ -116,7 +116,7 @@ Biggest feedback so far: [summarize top request]
 
 Thank you to everyone who tried it. Keep the issues coming.
 
-https://github.com/PingCompany/ppmlx
+https://github.com/the-focus-company/ppmlx
 **Media:** None (text-only for variety)
 
 ---
@@ -172,7 +172,7 @@ Routes:
 
 No framework magic. No middleware stack. Uvicorn serves it. Every request logged to SQLite.
 
-https://github.com/PingCompany/ppmlx/blob/main/ppmlx/server.py
+https://github.com/the-focus-company/ppmlx/blob/main/ppmlx/server.py
 **Media:** Architecture diagram from README
 
 ---
@@ -296,7 +296,7 @@ ppmlx is zero-config by default, but everything is tunable.
 
 One file, no env vars, no YAML.
 
-https://github.com/PingCompany/ppmlx#configuration
+https://github.com/the-focus-company/ppmlx#configuration
 **Media:** Screenshot of example config.toml
 
 ---
@@ -313,7 +313,7 @@ Delta: +XX%
 
 [Brief observation about the results]
 
-Full data: https://github.com/PingCompany/ppmlx/tree/main/benchmark_results
+Full data: https://github.com/the-focus-company/ppmlx/tree/main/benchmark_results
 
 Want me to benchmark a specific model? Reply with the name.
 **Media:** Bar chart for the new model
@@ -348,7 +348,7 @@ This is why I build in public. Real users finding real issues and building real 
 
 If you're using ppmlx for something interesting, DM me -- I'd love to feature your project.
 
-https://github.com/PingCompany/ppmlx
+https://github.com/the-focus-company/ppmlx
 **Media:** Screenshot of the highlighted contribution/usage
 
 ---
@@ -368,7 +368,7 @@ Coming next:
 - MCP Server support
 - Speculative decoding
 
-Follow progress: https://github.com/PingCompany/ppmlx/issues
+Follow progress: https://github.com/the-focus-company/ppmlx/issues
 **Media:** Roadmap graphic
 
 ---
@@ -520,7 +520,7 @@ Biggest takeaway: shipping daily and sharing honestly builds a community faster 
 
 Thank you to everyone following along. Month 2 starts tomorrow.
 
-https://github.com/PingCompany/ppmlx
+https://github.com/the-focus-company/ppmlx
 **Media:** Collage of highlights from the 30 days
 
 ---

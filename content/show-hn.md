@@ -19,7 +19,7 @@ That's it. 168+ models available through curated aliases (llama3, qwen2.5, mistr
 
 Features: streaming, tool calling, vision, embeddings, Responses API. Built with Python, MLX, FastAPI.
 
-GitHub: https://github.com/PingCompany/ppmlx
+GitHub: https://github.com/the-focus-company/ppmlx
 Website: https://ppmlx.dev
 
 ---
@@ -46,7 +46,7 @@ ppmlx serve
 
 168+ models. Streaming, tool calling, vision, embeddings. MIT licensed.
 
-https://github.com/PingCompany/ppmlx
+https://github.com/the-focus-company/ppmlx
 
 Happy to answer questions about MLX internals, the benchmark methodology, or anything else.
 
@@ -77,6 +77,6 @@ Then point any OpenAI-compatible client to http://localhost:6767/v1.
 
 Stack: Python + MLX + FastAPI + Typer. 168+ curated model aliases mapping to mlx-community HuggingFace repos. Supports chat completions, streaming, tool calling, vision, embeddings, and the Responses API.
 
-GitHub: https://github.com/PingCompany/ppmlx
+GitHub: https://github.com/the-focus-company/ppmlx
 Website: https://ppmlx.dev
 MIT License.

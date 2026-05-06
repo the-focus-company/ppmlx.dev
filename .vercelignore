@@ -1,0 +1,9 @@
+# Not deployed by Vercel, kept for parity if deployment target changes.
+.env
+.env.*
+node_modules
+dist
+.wrangler
+.astro
+.claude
+.pi

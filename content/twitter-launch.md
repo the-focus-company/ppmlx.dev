@@ -12,7 +12,7 @@ OpenAI-compatible API. Drop-in replacement.
 
 uv tool install ppmlx
 
-https://github.com/PingCompany/ppmlx
+https://github.com/the-focus-company/ppmlx
 
 #LocalLLM #AppleSilicon #MLX #AI
 
@@ -38,7 +38,7 @@ ppmlx serve
 
 MLX-native. OpenAI-compatible. 168+ models. Works with Claude Code, Cursor, Open WebUI, LangChain.
 
-https://github.com/PingCompany/ppmlx
+https://github.com/the-focus-company/ppmlx
 
 #LocalLLM #AppleSilicon #MLX #AI
 
@@ -54,7 +54,7 @@ It's 43-112% faster than Ollama on the same hardware because it skips the GGUF/l
 
 Open source, MIT licensed.
 
-https://github.com/PingCompany/ppmlx
+https://github.com/the-focus-company/ppmlx
 
 ### 2/7 -- The Problem
 

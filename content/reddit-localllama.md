@@ -28,7 +28,7 @@ Tested on MacBook Pro M4 Pro, 48 GB. All models 4-bit quantized. 3 runs averaged
 | Complex | 55.6 tok/s | 38.8 tok/s | +43% |
 | Long Context | 42.1 tok/s | 27.5 tok/s | +53% |
 
-Benchmark scripts are in the repo if you want to reproduce these on your own hardware: [scripts/](https://github.com/PingCompany/ppmlx/tree/main/scripts)
+Benchmark scripts are in the repo if you want to reproduce these on your own hardware: [scripts/](https://github.com/the-focus-company/ppmlx/tree/main/scripts)
 
 ## Quick Start
 
@@ -68,7 +68,7 @@ This only works on macOS with Apple Silicon. If you need cross-platform support,
 
 ## Links
 
-- **GitHub:** https://github.com/PingCompany/ppmlx
+- **GitHub:** https://github.com/the-focus-company/ppmlx
 - **Website:** https://ppmlx.dev
 - **PyPI:** https://pypi.org/project/ppmlx/
 
