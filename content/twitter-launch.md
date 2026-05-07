@@ -10,9 +10,9 @@ ppmlx: MLX-native LLM server for Apple Silicon.
 
 OpenAI-compatible API. Drop-in replacement.
 
-uv tool install ppmlx
+uv tool install git+https://github.com/the-focus-company/ppmlx@experimental
 
-https://github.com/the-focus-company/ppmlx
+https://github.com/the-focus-company/ppmlx/tree/experimental
 
 #LocalLLM #AppleSilicon #MLX #AI
 
@@ -22,7 +22,7 @@ Your M-series Mac is faster at local LLM inference than you think.
 
 ppmlx runs models natively through Apple's MLX framework -- no GGUF conversion. 43-112% faster than Ollama. OpenAI API on localhost:6767.
 
-uv tool install ppmlx
+uv tool install git+https://github.com/the-focus-company/ppmlx@experimental
 ppmlx serve
 
 https://ppmlx.dev
@@ -33,12 +33,12 @@ https://ppmlx.dev
 
 Two commands to run LLMs 43-112% faster on your Mac:
 
-uv tool install ppmlx
+uv tool install git+https://github.com/the-focus-company/ppmlx@experimental
 ppmlx serve
 
 MLX-native. OpenAI-compatible. 168+ models. Works with Claude Code, Cursor, Open WebUI, LangChain.
 
-https://github.com/the-focus-company/ppmlx
+https://github.com/the-focus-company/ppmlx/tree/experimental
 
 #LocalLLM #AppleSilicon #MLX #AI
 
@@ -54,7 +54,7 @@ It's 43-112% faster than Ollama on the same hardware because it skips the GGUF/l
 
 Open source, MIT licensed.
 
-https://github.com/the-focus-company/ppmlx
+https://github.com/the-focus-company/ppmlx/tree/experimental
 
 ### 2/7 -- The Problem
 
@@ -94,7 +94,7 @@ Change your base_url, keep everything else. It works with:
 ### 5/7 -- Quick Start
 
 ```
-uv tool install ppmlx
+uv tool install git+https://github.com/the-focus-company/ppmlx@experimental
 ppmlx pull llama3
 ppmlx serve
 ```

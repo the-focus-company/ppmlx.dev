@@ -20,7 +20,7 @@ ppmlx runs large language models natively on Apple Silicon using Apple's MLX fra
 ## Install
 
 ```
-uv tool install ppmlx
+uv tool install git+https://github.com/the-focus-company/ppmlx@experimental
 ```
 
 Requires macOS on Apple Silicon (M1/M2/M3/M4), Python 3.11+.
@@ -37,7 +37,7 @@ Then connect any OpenAI-compatible client to http://localhost:6767/v1 with any A
 ## Links
 
 - Website: https://ppmlx.dev
-- GitHub: https://github.com/the-focus-company/ppmlx
+- GitHub: https://github.com/the-focus-company/ppmlx/tree/experimental
 - PyPI: https://pypi.org/project/ppmlx/
 - Issues: https://github.com/the-focus-company/ppmlx/issues
 

@@ -11,7 +11,7 @@ The result: 43-112% faster token generation in our benchmarks (M4 Pro, 48 GB, 4-
 The API is OpenAI-compatible, so anything that talks to OpenAI works out of the box -- Claude Code, Cursor, Open WebUI, LangChain, any OpenAI SDK. Just point your base_url to localhost:6767.
 
 ```
-uv tool install ppmlx
+uv tool install git+https://github.com/the-focus-company/ppmlx@experimental
 ppmlx serve
 ```
 
@@ -19,7 +19,7 @@ That's it. 168+ models available through curated aliases (llama3, qwen2.5, mistr
 
 Features: streaming, tool calling, vision, embeddings, Responses API. Built with Python, MLX, FastAPI.
 
-GitHub: https://github.com/the-focus-company/ppmlx
+GitHub: https://github.com/the-focus-company/ppmlx/tree/experimental
 Website: https://ppmlx.dev
 
 ---
@@ -39,14 +39,14 @@ Benchmarks on M4 Pro (48 GB, 4-bit quant):
 It's a drop-in replacement. OpenAI-compatible API on localhost:6767. Works with Claude Code, Cursor, Open WebUI, LangChain -- anything that speaks the OpenAI protocol.
 
 ```
-uv tool install ppmlx    # or: pip install ppmlx
+uv tool install git+https://github.com/the-focus-company/ppmlx@experimental    # or: uv tool install git+https://github.com/the-focus-company/ppmlx@experimental
 ppmlx pull llama3
 ppmlx serve
 ```
 
 168+ models. Streaming, tool calling, vision, embeddings. MIT licensed.
 
-https://github.com/the-focus-company/ppmlx
+https://github.com/the-focus-company/ppmlx/tree/experimental
 
 Happy to answer questions about MLX internals, the benchmark methodology, or anything else.
 
@@ -69,7 +69,7 @@ Real benchmarks (M4 Pro, 48 GB, 3 runs averaged):
 
 Install and run:
 ```
-uv tool install ppmlx
+uv tool install git+https://github.com/the-focus-company/ppmlx@experimental
 ppmlx serve --model llama3
 ```
 
@@ -77,6 +77,6 @@ Then point any OpenAI-compatible client to http://localhost:6767/v1.
 
 Stack: Python + MLX + FastAPI + Typer. 168+ curated model aliases mapping to mlx-community HuggingFace repos. Supports chat completions, streaming, tool calling, vision, embeddings, and the Responses API.
 
-GitHub: https://github.com/the-focus-company/ppmlx
+GitHub: https://github.com/the-focus-company/ppmlx/tree/experimental
 Website: https://ppmlx.dev
 MIT License.

@@ -13,10 +13,10 @@ I just open-sourced ppmlx -- an MLX-native LLM server for Apple Silicon.
 43-112% faster than Ollama on the same Mac. OpenAI-compatible API. 168+ models.
 
 Two commands to try it:
-uv tool install ppmlx
+uv tool install git+https://github.com/the-focus-company/ppmlx@experimental
 ppmlx serve
 
-https://github.com/the-focus-company/ppmlx
+https://github.com/the-focus-company/ppmlx/tree/experimental
 
 #LocalLLM #AppleSilicon #MLX
 **Media:** Benchmark bar chart (tok/s comparison ppmlx vs Ollama)
@@ -49,7 +49,7 @@ I'm publishing all ppmlx benchmark data and scripts.
 
 No cherry-picking. Ollama actually has faster TTFT on Qwen3.5:9B for short prompts (324ms vs 537ms). I show that too.
 
-Scripts: https://github.com/the-focus-company/ppmlx/tree/main/scripts
+Scripts: https://github.com/the-focus-company/ppmlx/tree/experimental/scripts
 **Media:** Screenshot of terminal running bench_compare.sh output
 
 ---
@@ -116,7 +116,7 @@ Biggest feedback so far: [summarize top request]
 
 Thank you to everyone who tried it. Keep the issues coming.
 
-https://github.com/the-focus-company/ppmlx
+https://github.com/the-focus-company/ppmlx/tree/experimental
 **Media:** None (text-only for variety)
 
 ---
@@ -172,7 +172,7 @@ Routes:
 
 No framework magic. No middleware stack. Uvicorn serves it. Every request logged to SQLite.
 
-https://github.com/the-focus-company/ppmlx/blob/main/ppmlx/server.py
+https://github.com/the-focus-company/ppmlx/blob/experimental/ppmlx/server.py
 **Media:** Architecture diagram from README
 
 ---
@@ -313,7 +313,7 @@ Delta: +XX%
 
 [Brief observation about the results]
 
-Full data: https://github.com/the-focus-company/ppmlx/tree/main/benchmark_results
+Full data: https://github.com/the-focus-company/ppmlx/tree/experimental/benchmark_results
 
 Want me to benchmark a specific model? Reply with the name.
 **Media:** Bar chart for the new model
@@ -348,7 +348,7 @@ This is why I build in public. Real users finding real issues and building real 
 
 If you're using ppmlx for something interesting, DM me -- I'd love to feature your project.
 
-https://github.com/the-focus-company/ppmlx
+https://github.com/the-focus-company/ppmlx/tree/experimental
 **Media:** Screenshot of the highlighted contribution/usage
 
 ---
@@ -520,7 +520,7 @@ Biggest takeaway: shipping daily and sharing honestly builds a community faster 
 
 Thank you to everyone following along. Month 2 starts tomorrow.
 
-https://github.com/the-focus-company/ppmlx
+https://github.com/the-focus-company/ppmlx/tree/experimental
 **Media:** Collage of highlights from the 30 days
 
 ---
