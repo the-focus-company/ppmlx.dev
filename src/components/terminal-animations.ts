@@ -74,7 +74,7 @@ function animLaunch(g: number) {
   ] as Array<{ h?: string; a?: string; s?: string }>;
 
   function menu(c: number, model: string | null) {
-    let h = L('<span class="t-bold">ppmlx v0.5.2</span>') + L("&nbsp;");
+    let h = L('<span class="t-bold">ppmlx v0.5.5</span>') + L("&nbsp;");
     for (let i = 0; i < items.length; i++) {
       const sel = i === c;
       const tag = i > 0 && model ? '<span class="t-dim" style="float:right">(' + model + ")</span>" : "";
