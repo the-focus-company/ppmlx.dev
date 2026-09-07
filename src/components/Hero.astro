@@ -1,64 +1,145 @@
 ---
-const version = "0.5.6";
+const tools = ["Claude Code", "Codex", "OpenCode", "Pi"];
+const facts = [
+  { k: "Runs on", v: "Apple Silicon" },
+  { k: "Stays", v: "on this Mac" },
+  { k: "Listens on", v: "localhost:6767" },
+];
 ---
 
 <section class="hero">
-  <div class="container container--wide">
-    <div class="hero-badge reveal"><span class="dot"></span> v{version} &mdash; Open Source &middot; MIT</div>
-    <h1 class="reveal reveal-delay-1">Run LLMs <em>natively</em><br>on Apple Silicon</h1>
-    <p class="hero-sub reveal reveal-delay-2">
-      MLX-native inference. <strong>43&ndash;112% faster</strong> than GGUF translation layers. OpenAI-compatible API. 168+ models. Zero config.
-    </p>
-    <div class="hero-actions reveal reveal-delay-3">
-      <div class="install-cmd" data-copy="uv tool install ppmlx" role="button" tabindex="0">
-        <span class="prompt">$</span><span>uv tool install ppmlx</span>
-        <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-        <span class="tooltip">Copied!</span>
+  <div class="container container--wide frame">
+    <div class="board">
+      <div class="copy">
+        <h1>Run any model<br />in the tool you already have.</h1>
+        <p class="lede">
+          A local server on your Mac.<br />
+          Point Claude Code, Codex, OpenCode, or Pi at it once.
+        </p>
+        <div class="install-cmd" data-copy="uv tool install ppmlx" role="button" tabindex="0" aria-label="Copy the ppmlx install command">
+          <span class="prompt">$</span>
+          <span>uv tool install ppmlx</span>
+          <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          <span class="tooltip">Copied</span>
+        </div>
       </div>
-      <a href="https://github.com/the-focus-company/ppmlx" class="btn-primary" target="_blank" rel="noopener">
-        View on GitHub
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-      </a>
+
+      <dl class="facts">
+        {facts.map(({ k, v }) => (
+          <div>
+            <dt>{k}</dt>
+            <dd>{v}</dd>
+          </div>
+        ))}
+      </dl>
     </div>
+
+    <ul class="tools">
+      {tools.map((t) => <li>{t}</li>)}
+    </ul>
   </div>
 </section>
 
 <style>
   .hero {
-    position: relative; z-index: 1;
-    padding-top: clamp(120px, 18vw, 180px); padding-bottom: var(--section-gap);
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    min-height: 100svh;
+    padding: 120px 0 48px;
   }
   .hero::before {
-    content: ''; position: absolute; top: -20%; left: 50%; transform: translateX(-50%);
-    width: 800px; height: 600px;
-    background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 70%);
-    pointer-events: none; z-index: -1;
+    position: absolute;
+    top: 8%;
+    left: -8%;
+    z-index: -1;
+    width: min(720px, 70vw);
+    height: min(520px, 55vh);
+    content: '';
+    background: radial-gradient(ellipse, rgba(212, 131, 60, 0.14), transparent 68%);
+    pointer-events: none;
   }
-  .hero { overflow: hidden; }
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 6px 14px; border: 1px solid var(--border); border-radius: 100px;
-    font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary);
-    margin-bottom: 28px; background: var(--bg-surface);
+  .frame {
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+    width: 100%;
   }
-  .dot {
-    width: 6px; height: 6px; border-radius: 50%; background: var(--teal);
-    animation: pulse-dot 2s ease-in-out infinite;
-  }
-  @keyframes pulse-dot {
-    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(61, 181, 166, 0.4); }
-    50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(61, 181, 166, 0); }
+  .board {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: clamp(40px, 8vw, 96px);
+    align-items: start;
   }
   h1 {
-    font-family: var(--font-display); font-weight: 300;
-    font-size: clamp(40px, 6vw, 72px); line-height: 1.05;
-    letter-spacing: -0.03em; margin-bottom: 20px;
+    max-width: 11em;
+    margin: 0 0 22px;
+    font-family: var(--font-display);
+    font-size: clamp(42px, 6vw, 76px);
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 0.96;
   }
-  h1 em { font-style: italic; color: var(--accent-bright); }
-  .hero-sub {
-    font-size: clamp(16px, 2vw, 19px); color: var(--text-secondary);
-    line-height: 1.6; margin-bottom: 40px; font-weight: 300;
+  .lede {
+    margin: 0 0 32px;
+    color: var(--text-secondary);
+    font-size: clamp(17px, 1.5vw, 19px);
+    font-weight: 300;
+    line-height: 1.5;
   }
-  .hero-sub strong { color: var(--text-primary); font-weight: 400; }
-  .hero-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .copy :global(.install-cmd) {
+    padding: 16px 22px;
+    border-color: #2a241c;
+    background: #14110e;
+    font-size: 15px;
+    box-shadow: 0 0 0 1px rgba(212, 131, 60, 0.08);
+  }
+
+  .facts {
+    display: grid;
+    gap: 22px;
+    margin: 0;
+    padding-top: 10px;
+  }
+  .facts div { margin: 0; }
+  .facts dt {
+    margin: 0 0 4px;
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+  .facts dd {
+    margin: 0;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 15px;
+  }
+
+  .tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 28px;
+    margin: 0;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+    list-style: none;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+
+  @media (max-width: 800px) {
+    .hero { padding-top: 112px; }
+    .frame { min-height: 0; gap: 40px; }
+    .board { grid-template-columns: 1fr; gap: 36px; }
+    h1 { max-width: none; }
+    .copy :global(.install-cmd) { width: 100%; justify-content: center; }
+    .facts { grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  }
+  @media (max-width: 520px) {
+    .facts { grid-template-columns: 1fr; }
+  }
 </style>

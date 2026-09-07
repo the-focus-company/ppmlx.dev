@@ -2,22 +2,26 @@
 import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import Hero from "../components/Hero.astro";
+import Roadmap from "../components/Roadmap.astro";
 import Terminal from "../components/Terminal.astro";
 import Benchmarks from "../components/Benchmarks.astro";
 import Features from "../components/Features.astro";
+import Memory from "../components/Memory.astro";
 import CTA from "../components/CTA.astro";
 import Footer from "../components/Footer.astro";
 ---
 
 <Layout
-  title="ppmlx: faster, MLX-native inference for Apple Silicon"
-  description="Run LLMs natively on Apple Silicon with MLX. 43-112% faster than Ollama. OpenAI-compatible API. 168+ models. Open source."
+  title="ppmlx: local inference and model routing for coding agents"
+  description="Run MLX models on Apple Silicon now. Follow the open-source work on local routing, tool normalization, and explicit memory for coding agents."
 >
   <Nav />
   <Hero />
+  <Roadmap />
   <Terminal />
   <Benchmarks />
   <Features />
+  <Memory />
   <CTA />
   <Footer />
 </Layout>

@@ -27,38 +27,39 @@ const ogImage = new URL("/og-image.png", Astro.site);
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="ppmlx — MLX-native LLM inference for Apple Silicon" />
+    <meta property="og:image:alt" content="ppmlx — local models for coding agents on Apple Silicon" />
     <meta property="og:site_name" content="ppmlx" />
     <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
-    <meta name="twitter:image:alt" content="ppmlx — MLX-native LLM inference for Apple Silicon" />
+    <meta name="twitter:image:alt" content="ppmlx — local models for coding agents on Apple Silicon" />
     <meta name="keywords" content="MLX, Apple Silicon, LLM, local inference, Ollama alternative, OpenAI API, macOS, M1, M2, M3, M4, Metal GPU, ppmlx" />
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "ppmlx",
       "url": "https://ppmlx.dev",
-      "description": "MLX-native LLM inference server for Apple Silicon. OpenAI-compatible API. 168+ models. 43-112% faster than GGUF translation layers like Ollama.",
+      "description": "Local MLX inference for Apple Silicon, with model routing, tool normalization, and explicit memory for coding agents.",
       "applicationCategory": "DeveloperApplication",
       "operatingSystem": "macOS (Apple Silicon)",
       "license": "https://opensource.org/licenses/MIT",
       "downloadUrl": "https://pypi.org/project/ppmlx/",
-      "codeRepository": "https://github.com/the-focus-company/ppmlx",
-      "softwareVersion": "0.5.6",
+      "codeRepository": "https://github.com/wydrox/ppmlx",
+      "softwareVersion": "0.5.9",
       "author": { "@type": "Organization", "name": "The Focus Company", "url": "https://thefocus.company" },
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
       "featureList": [
         "MLX-native inference on Apple Silicon Metal GPU",
-        "OpenAI-compatible API (Chat Completions, Responses, Embeddings)",
-        "Anthropic Messages API support",
+        "Local OpenAI-compatible API with Chat Completions, Responses, and Embeddings",
+        "Local Anthropic Messages API",
         "168+ curated model registry with human aliases",
-        "Tool calling / function calling for coding agents",
+        "Local tool calling for coding agents",
         "Vision model support via mlx-vlm",
         "Interactive TUI model picker and chat REPL",
-        "43-112% faster than Ollama on Apple Silicon benchmarks"
+        "Experimental local temporal memory graph",
+        "Published Apple Silicon benchmarks against Ollama"
       ]
     })} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -74,7 +75,18 @@ const ogImage = new URL("/og-image.png", Astro.site);
         (entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("visible"); obs.unobserve(e.target); } }),
         { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
       );
-      document.querySelectorAll(".reveal").forEach((el) => obs.observe(el));
+      const revealElements = document.querySelectorAll<HTMLElement>(".reveal");
+      revealElements.forEach((el) => obs.observe(el));
+
+      // Start above-the-fold motion even when a browser delays iframe or tab observation.
+      requestAnimationFrame(() => {
+        revealElements.forEach((el) => {
+          const rect = el.getBoundingClientRect();
+          if (rect.bottom <= 0 || rect.top >= window.innerHeight) return;
+          el.classList.add("visible");
+          obs.unobserve(el);
+        });
+      });
 
       // Nav scroll effect
       const nav = document.querySelector("nav");
@@ -84,12 +96,37 @@ const ogImage = new URL("/og-image.png", Astro.site);
         });
       }
 
+      // Keep same-page anchors clear of the fixed navigation bar.
+      const scrollToAnchor = (hash: string) => {
+        if (!hash.startsWith("#")) return false;
+        const target = document.getElementById(decodeURIComponent(hash.slice(1)));
+        if (!target) return false;
+        target.scrollIntoView({ behavior: "auto", block: "start" });
+        return true;
+      };
+
+      document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", (event) => {
+          const hash = anchor.getAttribute("href");
+          if (!hash || !scrollToAnchor(hash)) return;
+          event.preventDefault();
+          if (location.hash !== hash) history.pushState(null, "", hash);
+        });
+      });
+
+      if (location.hash) requestAnimationFrame(() => scrollToAnchor(location.hash));
+
       // Copy install command
       document.querySelectorAll<HTMLElement>(".install-cmd").forEach((el) => {
         el.addEventListener("click", () => {
           navigator.clipboard.writeText(el.dataset.copy || "uv tool install ppmlx");
           const t = el.querySelector(".tooltip");
           if (t) { t.classList.add("show"); setTimeout(() => t.classList.remove("show"), 1500); }
+        });
+        el.addEventListener("keydown", (event) => {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          el.click();
         });
       });
     </script>
