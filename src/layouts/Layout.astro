@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { release } from "../data/release";
 
 interface Props {
   title: string;
@@ -47,7 +48,7 @@ const ogImage = new URL("/og-image.png", Astro.site);
       "license": "https://opensource.org/licenses/MIT",
       "downloadUrl": "https://pypi.org/project/ppmlx/",
       "codeRepository": "https://github.com/wydrox/ppmlx",
-      "softwareVersion": "0.5.9",
+      "softwareVersion": release,
       "author": { "@type": "Organization", "name": "The Focus Company", "url": "https://thefocus.company" },
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
       "featureList": [
@@ -62,71 +63,20 @@ const ogImage = new URL("/og-image.png", Astro.site);
         "Published Apple Silicon benchmarks against Ollama"
       ]
     })} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
   </head>
   <body>
-    <div class="grid-bg" aria-hidden="true"></div>
+    <a href="#main-content" class="skip-link">Skip to content</a>
     <slot />
     <script>
-      // Reveal on scroll
-      const obs = new IntersectionObserver(
-        (entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("visible"); obs.unobserve(e.target); } }),
-        { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
-      );
-      const revealElements = document.querySelectorAll<HTMLElement>(".reveal");
-      revealElements.forEach((el) => obs.observe(el));
-
-      // Start above-the-fold motion even when a browser delays iframe or tab observation.
-      requestAnimationFrame(() => {
-        revealElements.forEach((el) => {
-          const rect = el.getBoundingClientRect();
-          if (rect.bottom <= 0 || rect.top >= window.innerHeight) return;
-          el.classList.add("visible");
-          obs.unobserve(el);
-        });
-      });
-
-      // Nav scroll effect
-      const nav = document.querySelector("nav");
-      if (nav) {
-        window.addEventListener("scroll", () => {
-          requestAnimationFrame(() => nav.classList.toggle("scrolled", scrollY > 40));
-        });
-      }
-
-      // Keep same-page anchors clear of the fixed navigation bar.
-      const scrollToAnchor = (hash: string) => {
-        if (!hash.startsWith("#")) return false;
-        const target = document.getElementById(decodeURIComponent(hash.slice(1)));
-        if (!target) return false;
-        target.scrollIntoView({ behavior: "auto", block: "start" });
-        return true;
-      };
-
-      document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((anchor) => {
-        anchor.addEventListener("click", (event) => {
-          const hash = anchor.getAttribute("href");
-          if (!hash || !scrollToAnchor(hash)) return;
-          event.preventDefault();
-          if (location.hash !== hash) history.pushState(null, "", hash);
-        });
-      });
-
-      if (location.hash) requestAnimationFrame(() => scrollToAnchor(location.hash));
-
-      // Copy install command
-      document.querySelectorAll<HTMLElement>(".install-cmd").forEach((el) => {
-        el.addEventListener("click", () => {
-          navigator.clipboard.writeText(el.dataset.copy || "uv tool install ppmlx");
-          const t = el.querySelector(".tooltip");
-          if (t) { t.classList.add("show"); setTimeout(() => t.classList.remove("show"), 1500); }
-        });
-        el.addEventListener("keydown", (event) => {
-          if (event.key !== "Enter" && event.key !== " ") return;
-          event.preventDefault();
-          el.click();
+      document.querySelectorAll<HTMLButtonElement>("button[data-copy]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const status = document.querySelector<HTMLElement>(".copy-status");
+          try {
+            await navigator.clipboard.writeText(button.dataset.copy || "");
+            if (status) status.textContent = "Command copied.";
+          } catch {
+            if (status) status.textContent = "Copy failed. Select and copy the command above.";
+          }
         });
       });
     </script>

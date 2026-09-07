@@ -1,26 +1,10 @@
-<footer>
-  <div class="container container--wide">
-    <div class="footer-inner">
-      <div class="footer-left">ppmlx &mdash; built by <a href="https://thefocus.company" target="_blank" rel="noopener">The Focus Company</a></div>
-      <ul class="footer-links">
-        <li><a href="https://github.com/wydrox/ppmlx" target="_blank" rel="noopener">GitHub</a></li>
-        <li><a href="https://pypi.org/project/ppmlx/" target="_blank" rel="noopener">PyPI</a></li>
-        <li><a href="https://github.com/wydrox/ppmlx/issues" target="_blank" rel="noopener">Issues</a></li>
-      </ul>
-    </div>
-  </div>
-</footer>
-
+<footer><div class="container footer-inner"><p><a href="/" class="brand">ppmlx</a><span>MIT license. Built by <a href="https://thefocus.company">The Focus Company</a>.</span></p><ul aria-label="Project links"><li><a href="https://github.com/wydrox/ppmlx">GitHub</a></li><li><a href="https://pypi.org/project/ppmlx/">PyPI</a></li><li><a href="https://github.com/wydrox/ppmlx/blob/main/SECURITY.md">Security</a></li></ul></div></footer>
 <style>
-  footer { position: relative; z-index: 1; padding: 40px 0; border-top: 1px solid var(--border); }
-  .footer-inner { display: flex; align-items: center; justify-content: space-between; }
-  .footer-left { font-family: var(--font-mono); font-size: 13px; color: var(--text-dim); }
-  .footer-left a { color: var(--text-secondary); text-decoration: none; }
-  .footer-left a:hover { color: var(--text-primary); }
-  .footer-links { display: flex; gap: 24px; list-style: none; }
-  .footer-links a {
-    font-family: var(--font-mono); font-size: 13px; color: var(--text-dim);
-    text-decoration: none; transition: color 0.2s, transform 0.15s; display: inline-block;
-  }
-  .footer-links a:hover { color: var(--text-primary); transform: translateY(-1px); }
+footer { border-top: 1px solid var(--border); padding: 28px 0; }
+.footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+p { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin: 0; font-size: 11px; }
+.brand { font: 700 17px var(--font-mono); color: var(--text-primary); }
+a { color: var(--text-secondary); text-decoration: none; } a:hover { text-decoration: underline; }
+ul { display: flex; flex-wrap: wrap; gap: 22px; list-style: none; margin: 0; padding: 0; font-size: 12px; }
+@media(max-width: 640px) { .footer-inner { align-items: flex-start; flex-direction: column; } }
 </style>

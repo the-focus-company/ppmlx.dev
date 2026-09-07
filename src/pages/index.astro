@@ -2,26 +2,68 @@
 import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import Hero from "../components/Hero.astro";
-import Roadmap from "../components/Roadmap.astro";
-import Terminal from "../components/Terminal.astro";
-import Benchmarks from "../components/Benchmarks.astro";
 import Features from "../components/Features.astro";
-import Memory from "../components/Memory.astro";
-import CTA from "../components/CTA.astro";
 import Footer from "../components/Footer.astro";
----
+const example = `from openai import OpenAI
 
-<Layout
-  title="ppmlx: local inference and model routing for coding agents"
-  description="Run MLX models on Apple Silicon now. Follow the open-source work on local routing, tool normalization, and explicit memory for coding agents."
->
+client = OpenAI(
+    base_url="http://localhost:6767/v1",
+    api_key="local",
+)
+
+response = client.chat.completions.create(
+    model="llama3",
+    messages=[{"role": "user", "content": "Hello"}],
+)
+print(response.choices[0].message.content)`;
+---
+<Layout title="ppmlx — local models for Apple Silicon" description="Run language models on Apple Silicon with MLX. An open-source CLI and local server with OpenAI-compatible APIs and explicit model routing.">
   <Nav />
-  <Hero />
-  <Roadmap />
-  <Terminal />
-  <Benchmarks />
-  <Features />
-  <Memory />
-  <CTA />
+  <main id="main-content">
+    <Hero />
+    <Features />
+    <section class="connect container section" id="api" aria-labelledby="connect-title">
+      <div>
+        <h2 id="connect-title">Keep your client.<br />Change the endpoint.</h2>
+        <p>Use the OpenAI Python SDK with the local server. The same endpoint works with other compatible clients.</p>
+        <p>For coding agents, ppmlx includes setup commands for Claude Code, Codex, OpenCode, Pi, and Grok CLI.</p>
+        <a href="https://github.com/wydrox/ppmlx#connect-your-tools">Connect your tools</a>
+        <dl class="protocols"><div><dt>OpenAI</dt><dd>Chat Completions, Responses, Embeddings</dd></div><div><dt>Anthropic</dt><dd>Messages API</dd></div></dl>
+      </div>
+      <div class="example"><div class="example-header"><span>Python</span><span>OpenAI SDK</span></div><pre tabindex="0" aria-label="Python connection example"><code>{example}</code></pre></div>
+    </section>
+    <section class="project-section" aria-labelledby="project-title">
+      <div class="container project-grid">
+        <div><h2 id="project-title">Open source.<br />Open development.</h2><p>ppmlx is an MIT-licensed project. Read the code, report a problem, or help with the next change.</p><p class="status-note">The project is in beta. Model support varies. Memory and TurboQuant are experimental features.</p></div>
+        <div class="project-links">
+          <a href="https://github.com/the-focus-company/ppmlx.dev/blob/main/CHANGELOG.md"><strong>Changelog</strong><span>Changes for each version</span></a>
+          <a href="https://github.com/wydrox/ppmlx/issues"><strong>Issues and contributions</strong><span>Report problems and propose changes</span></a>
+          <a href="https://github.com/wydrox/ppmlx/blob/main/docs/privacy.md"><strong>Privacy and security</strong><span>Data paths, controls, and known limits</span></a>
+          <a href="/turboquant"><strong>TurboQuant experiments</strong><span>KV-cache compression on Apple Silicon</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
   <Footer />
 </Layout>
+<style>
+.connect { display: grid; grid-template-columns: 1fr 1.1fr; gap: 64px; align-items: start; }
+.connect p, .project-grid p { font-size: 15px; max-width: 420px; }
+.connect a { font-size: 14px; }
+.protocols { border-top: 1px solid var(--border); margin: 26px 0 0; padding-top: 18px; font-size: 12px; }
+.protocols div { display: grid; grid-template-columns: 80px 1fr; gap: 12px; margin-bottom: 10px; }
+dt { font-weight: 600; } dd { margin: 0; color: var(--text-secondary); }
+.example { min-width: 0; border: 1px solid var(--border); border-radius: 6px; background: var(--bg-surface); }
+.example-header { padding: 12px 22px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); color: var(--text-secondary); font-size: 12px; }
+pre { margin: 0; padding: 22px; line-height: 1.9; font-size: 13px; } pre code { font-size: inherit; }
+.project-section { border-top: 1px solid var(--border); padding: 54px 0; }
+.project-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 64px; }
+.status-note { font-size: 13px !important; }
+.project-links { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 32px; }
+.project-links a { text-decoration: none; border-top: 1px solid var(--border); padding-top: 16px; }
+.project-links a:hover strong { text-decoration: underline; }
+.project-links strong { display: block; font-size: 14px; font-weight: 600; margin-bottom: 5px; }
+.project-links span { display: block; color: var(--text-secondary); font-size: 12px; }
+@media (max-width: 720px) { .connect, .project-grid { grid-template-columns: 1fr; gap: 28px; } pre { padding: 18px; font-size: 11px; } }
+@media (max-width: 380px) { .project-links { grid-template-columns: 1fr; } }
+</style>

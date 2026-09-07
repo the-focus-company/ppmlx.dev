@@ -1,145 +1,53 @@
 ---
-const tools = ["Claude Code", "Codex", "OpenCode", "Pi"];
-const facts = [
-  { k: "Runs on", v: "Apple Silicon" },
-  { k: "Stays", v: "on this Mac" },
-  { k: "Listens on", v: "localhost:6767" },
-];
+import { release } from "../data/release";
 ---
-
-<section class="hero">
-  <div class="container container--wide frame">
-    <div class="board">
-      <div class="copy">
-        <h1>Run any model<br />in the tool you already have.</h1>
-        <p class="lede">
-          A local server on your Mac.<br />
-          Point Claude Code, Codex, OpenCode, or Pi at it once.
-        </p>
-        <div class="install-cmd" data-copy="uv tool install ppmlx" role="button" tabindex="0" aria-label="Copy the ppmlx install command">
-          <span class="prompt">$</span>
-          <span>uv tool install ppmlx</span>
-          <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          <span class="tooltip">Copied</span>
-        </div>
-      </div>
-
-      <dl class="facts">
-        {facts.map(({ k, v }) => (
-          <div>
-            <dt>{k}</dt>
-            <dd>{v}</dd>
-          </div>
-        ))}
-      </dl>
+<section class="hero container" aria-labelledby="hero-title">
+  <div class="intro">
+    <a class="release" href="https://github.com/the-focus-company/ppmlx.dev/blob/main/CHANGELOG.md">Development v{release} <span>Read the changelog</span></a>
+    <h1 id="hero-title">Local models.<br />A familiar API.</h1>
+    <p class="lede">Run language models on Apple Silicon with MLX. Connect your editor, coding agent, or application through one local server.</p>
+    <div class="hero-actions">
+      <a href="#quickstart" class="btn-primary">Get started</a>
+      <a href="https://github.com/wydrox/ppmlx" class="btn-secondary">View source</a>
     </div>
-
-    <ul class="tools">
-      {tools.map((t) => <li>{t}</li>)}
-    </ul>
+    <p class="requirements">macOS on Apple Silicon <span aria-hidden="true">/</span> Python 3.11–3.12 <span aria-hidden="true">/</span> MIT license</p>
   </div>
+  <aside id="quickstart" class="quickstart" aria-labelledby="quickstart-title">
+    <div class="code-header"><h2 id="quickstart-title">Quick start</h2><span>Terminal</span></div>
+    <div class="code-body">
+      <p class="code-note">Install ppmlx</p>
+      <div class="command"><code>uv tool install ppmlx</code><button type="button" data-copy="uv tool install ppmlx" aria-label="Copy install command">Copy</button></div>
+      <p class="code-note">Download a model</p>
+      <div class="command"><code>ppmlx pull llama3</code></div>
+      <p class="code-note">Start the local server</p>
+      <div class="command"><code>ppmlx serve --model llama3</code></div>
+      <p class="endpoint">http://localhost:6767/v1</p>
+      <p class="copy-status" role="status" aria-live="polite"></p>
+    </div>
+    <p class="code-footer">With pip: <code>pip install ppmlx</code><br /><a href="https://github.com/wydrox/ppmlx#install">Installation options</a></p>
+  </aside>
 </section>
-
 <style>
-  .hero {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-    min-height: 100svh;
-    padding: 120px 0 48px;
-  }
-  .hero::before {
-    position: absolute;
-    top: 8%;
-    left: -8%;
-    z-index: -1;
-    width: min(720px, 70vw);
-    height: min(520px, 55vh);
-    content: '';
-    background: radial-gradient(ellipse, rgba(212, 131, 60, 0.14), transparent 68%);
-    pointer-events: none;
-  }
-  .frame {
-    display: flex;
-    flex-direction: column;
-    gap: 56px;
-    width: 100%;
-  }
-  .board {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: clamp(40px, 8vw, 96px);
-    align-items: start;
-  }
-  h1 {
-    max-width: 11em;
-    margin: 0 0 22px;
-    font-family: var(--font-display);
-    font-size: clamp(42px, 6vw, 76px);
-    font-weight: 400;
-    letter-spacing: -0.04em;
-    line-height: 0.96;
-  }
-  .lede {
-    margin: 0 0 32px;
-    color: var(--text-secondary);
-    font-size: clamp(17px, 1.5vw, 19px);
-    font-weight: 300;
-    line-height: 1.5;
-  }
-  .copy :global(.install-cmd) {
-    padding: 16px 22px;
-    border-color: #2a241c;
-    background: #14110e;
-    font-size: 15px;
-    box-shadow: 0 0 0 1px rgba(212, 131, 60, 0.08);
-  }
-
-  .facts {
-    display: grid;
-    gap: 22px;
-    margin: 0;
-    padding-top: 10px;
-  }
-  .facts div { margin: 0; }
-  .facts dt {
-    margin: 0 0 4px;
-    color: var(--text-dim);
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-  }
-  .facts dd {
-    margin: 0;
-    color: var(--text-primary);
-    font-family: var(--font-mono);
-    font-size: 15px;
-  }
-
-  .tools {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 28px;
-    margin: 0;
-    padding-top: 22px;
-    border-top: 1px solid var(--border);
-    list-style: none;
-    color: var(--text-secondary);
-    font-family: var(--font-mono);
-    font-size: 13px;
-  }
-
-  @media (max-width: 800px) {
-    .hero { padding-top: 112px; }
-    .frame { min-height: 0; gap: 40px; }
-    .board { grid-template-columns: 1fr; gap: 36px; }
-    h1 { max-width: none; }
-    .copy :global(.install-cmd) { width: 100%; justify-content: center; }
-    .facts { grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
-  }
-  @media (max-width: 520px) {
-    .facts { grid-template-columns: 1fr; }
-  }
+.hero { display: grid; grid-template-columns: 1.15fr 1fr; gap: 64px; align-items: center; padding-top: 72px; padding-bottom: 70px; }
+.release { display: inline-flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 12px; font-weight: 600; color: var(--text-secondary); text-decoration: none; margin-bottom: 24px; }
+.release span { border-left: 1px solid var(--border); padding-left: 10px; color: var(--accent); font-weight: 400; }
+h1 { font-size: clamp(40px, 4.5vw, 58px); letter-spacing: -.045em; line-height: 1.08; margin-bottom: 22px; }
+.lede { font-size: 18px; line-height: 1.65; max-width: 440px; margin-bottom: 26px; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.requirements { margin: 22px 0 0; font-size: 11px; line-height: 1.9; }
+.requirements span { margin: 0 5px; color: #b0bac7; }
+.quickstart { min-width: 0; border: 1px solid #ccd5e1; border-radius: 7px; background: var(--bg-surface); }
+.code-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px; border-bottom: 1px solid var(--border); }
+.code-header h2 { font-size: 14px; letter-spacing: 0; margin: 0; }
+.code-header span { font-size: 12px; color: var(--text-secondary); }
+.code-body { padding: 23px 22px 0; }
+.code-note { color: var(--text-secondary); font-size: 12px; margin-bottom: 6px; }
+.command { display: flex; gap: 8px; justify-content: space-between; align-items: center; min-height: 30px; margin-bottom: 20px; }
+.command code { font-size: 13px; overflow-wrap: anywhere; }
+.command button { flex-shrink: 0; padding: 4px 8px; color: var(--text-secondary); background: white; border: 1px solid #ccd5e1; border-radius: 4px; font-size: 11px; }
+.endpoint { margin: 4px 0 0; font: 12px/1.6 var(--font-mono); color: #216e58; overflow-wrap: anywhere; }
+.copy-status { min-height: 18px; margin: 4px 0; font-size: 11px; }
+.code-footer { border-top: 1px solid var(--border); padding: 13px 22px; margin: 0; font-size: 12px; line-height: 1.9; }
+@media (max-width: 850px) { .hero { gap: 32px; } }
+@media (max-width: 720px) { .hero { grid-template-columns: 1fr; padding-top: 40px; padding-bottom: 40px; gap: 32px; } .lede { max-width: 560px; } }
 </style>
