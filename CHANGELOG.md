@@ -2,6 +2,11 @@
 
 This file lists changes for each website version.
 
+## 0.11.6 — 2026-09-07
+
+- Added a continuous SVG route animation inspired by the logo, with curved paths and moving points.
+- Added pause and resume controls, automatic offscreen pause, and a static reduced-motion view.
+
 ## 0.11.5 — 2026-09-07
 
 - Replaced the hero route window with an SVG animation based on the site logo.
