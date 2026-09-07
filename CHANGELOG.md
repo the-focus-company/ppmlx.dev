@@ -2,6 +2,10 @@
 
 This file lists changes for each website version.
 
+## 0.11.4 — 2026-09-07
+
+- Replaced the old favicon with the site's route mark in SVG and PNG formats.
+
 ## 0.11.3 — 2026-09-07
 
 - Simplified the social preview to the exact site logo and one short message.
