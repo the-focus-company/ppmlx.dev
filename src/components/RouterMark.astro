@@ -1,33 +1,37 @@
 ---
 const routes = [
-  { y: 5, lanes: [12, 12, 19, 19, 5, 5, 12] },
-  { y: 12, lanes: [19, 19, 5, 5, 12, 12, 19] },
-  { y: 19, lanes: [5, 5, 12, 12, 19, 19, 5] },
+  { y: 4, closeY: 6 },
+  { y: 12, closeY: 12 },
+  { y: 20, closeY: 18 },
 ];
-const routePath = (y: number, lane: number) => `M4 ${y}H8L11 ${lane}H13L16 ${y}H20`;
+const routePath = (y: number, split: number) => `M4 12H${split}L16 ${y}H20`;
+const timing = {
+  begin: "indefinite",
+  dur: "14s",
+  repeatCount: "indefinite",
+  calcMode: "spline",
+  keyTimes: "0;.15;.45;.60;1",
+  keySplines: ".65 0 .35 1;.65 0 .35 1;.65 0 .35 1;.65 0 .35 1",
+};
 ---
 <figure class="router-motion" data-router-motion>
   <svg class="route-scene" data-route-scene viewBox="0 0 24 24" aria-hidden="true">
     <g fill="none" stroke="var(--accent)" stroke-width="1.5">
-      {routes.map(({ y, lanes }) => (
-        <path d={routePath(y, lanes[0])}>
-          <animate data-route-morph attributeName="d" begin="indefinite" dur="12s" repeatCount="indefinite" calcMode="spline" keyTimes="0;.12;.30;.45;.63;.78;1" keySplines=".65 0 .35 1;.65 0 .35 1;.65 0 .35 1;.65 0 .35 1;.65 0 .35 1;.65 0 .35 1" values={lanes.map(lane => routePath(y, lane)).join(";")} />
-        </path>
-      ))}
+      {routes.map(({ y, closeY }) => {
+        const open = routePath(y, 8);
+        const closed = routePath(closeY, 12);
+        return <path d={open}><animate data-route-morph attributeName="d" {...timing} values={[open, open, closed, closed, open].join(";")} /></path>;
+      })}
     </g>
     <g fill="var(--accent)">
-      {routes.map(({ y }) => <><circle cx="4" cy={y} r="2" /><circle cx="20" cy={y} r="2" /></>)}
+      <circle cx="4" cy="12" r="2" />
+      {routes.map(({ y, closeY }) => <circle cx="20" cy={y} r="2"><animate data-route-morph attributeName="cy" {...timing} values={[y, y, closeY, closeY, y].join(";")} /></circle>)}
     </g>
   </svg>
-  <button class="motion-toggle" data-motion-toggle type="button" aria-pressed="false" hidden>Pause animation</button>
 </figure>
 <style>
 .router-motion { width: 100%; max-width: 340px; margin: 0; }
 .route-scene { display: block; width: 100%; max-width: 320px; height: auto; }
-.motion-toggle { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 0; margin-top: 14px; border: 0; background: transparent; color: var(--text-dim); font: 12px/1.5 var(--font-mono); transition: color 180ms ease; }
-.motion-toggle[hidden] { display: none; }
-.motion-toggle:hover { color: var(--accent); }
-.motion-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 </style>
 <script>
   import { initRouterMotion } from "./router-motion";
