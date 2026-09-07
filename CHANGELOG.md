@@ -2,6 +2,11 @@
 
 This file lists changes for each website version.
 
+## 0.11.7 — 2026-09-07
+
+- Replaced the thin curved animation with three solid routes that use the logo's stroke weight, circular nodes, and lavender color.
+- Kept the continuous loop, pause controls, and reduced-motion support.
+
 ## 0.11.6 — 2026-09-07
 
 - Added a continuous SVG route animation inspired by the logo, with curved paths and moving points.
