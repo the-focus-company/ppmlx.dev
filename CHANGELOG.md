@@ -2,6 +2,11 @@
 
 This file lists changes for each website version.
 
+## 0.11.2 — 2026-09-07
+
+- Replaced the social preview with a local router illustration and less text.
+- Updated Open Graph and Twitter image links and descriptions on all pages.
+
 ## 0.11.1 — 2026-09-07
 
 - Added a softer dark design with clear type and quiet controls.

@@ -9,7 +9,7 @@ interface Props {
 
 const { title, description } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const ogImage = new URL("/og-image.png", Astro.site);
+const ogImage = new URL("/og-router.png", Astro.site);
 ---
 
 <!doctype html>
@@ -28,14 +28,14 @@ const ogImage = new URL("/og-image.png", Astro.site);
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="ppmlx — your apps, your models, your routes" />
+    <meta property="og:image:alt" content="ppmlx routes apps through a local router to cloud and local models" />
     <meta property="og:site_name" content="ppmlx" />
     <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
-    <meta name="twitter:image:alt" content="ppmlx — your apps, your models, your routes" />
+    <meta name="twitter:image:alt" content="ppmlx routes apps through a local router to cloud and local models" />
     <meta name="keywords" content="MLX, Apple Silicon, LLM, local inference, Ollama alternative, OpenAI API, macOS, M1, M2, M3, M4, Metal GPU, ppmlx" />
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
