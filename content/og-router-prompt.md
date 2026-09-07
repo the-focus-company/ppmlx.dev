@@ -1,5 +1,7 @@
 # Social preview artwork
 
+This generated concept was replaced by `og-source.svg` and `public/og-brand.png` in version 0.11.3.
+
 Generated with the built-in image generation tool on 2026-09-07.
 Asset: `public/og-router.png`, exported at 1200 × 630 pixels.
 The image shows a routing concept, not the current application interface.
