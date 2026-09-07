@@ -2,6 +2,13 @@
 
 This file lists changes for each website version.
 
+## 0.11.5 — 2026-09-07
+
+- Replaced the hero route window with an SVG animation based on the site logo.
+- Added more open space and simpler text sections for routes, memory, and setup.
+- Added short link and button transitions, route replay, and visual copy confirmation.
+- Kept the logo static when reduced motion is enabled.
+
 ## 0.11.4 — 2026-09-07
 
 - Replaced the old favicon with the site's route mark in SVG and PNG formats.

@@ -1,0 +1,142 @@
+<figure class="router-mark" data-router-mark>
+  <svg class="router-mark__drawing" viewBox="0 0 24 24" aria-hidden="true">
+    <path
+      class="router-mark__base"
+      d="M4 7h6l4 10h6M4 17h6l4-10h6"
+      fill="none"
+    />
+    <path
+      class="router-mark__overlay"
+      data-route-overlay
+      d="M4 7h6l4 10h6"
+      pathLength="1"
+      stroke-dasharray="1"
+      stroke-dashoffset="1"
+      fill="none"
+    />
+    <path
+      class="router-mark__overlay"
+      data-route-overlay
+      d="M4 17h6l4-10h6"
+      pathLength="1"
+      stroke-dasharray="1"
+      stroke-dashoffset="1"
+      fill="none"
+    />
+    <circle class="router-mark__node" cx="4" cy="7" r="2" />
+    <circle class="router-mark__node" cx="4" cy="17" r="2" />
+    <circle class="router-mark__node" cx="20" cy="7" r="2" />
+    <circle class="router-mark__node" cx="20" cy="17" r="2" />
+  </svg>
+  <button class="router-mark__replay" type="button" aria-label="Replay route animation">Replay route</button>
+</figure>
+
+<style>
+  .router-mark {
+    width: 100%;
+    max-width: 340px;
+    margin: 0;
+  }
+
+  .router-mark__drawing {
+    display: block;
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    overflow: visible;
+  }
+
+  .router-mark__base,
+  .router-mark__overlay {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.5;
+  }
+
+  .router-mark__base {
+    stroke: var(--border);
+  }
+
+  .router-mark__overlay {
+    stroke: var(--accent);
+  }
+
+  .router-mark__node {
+    fill: var(--accent);
+  }
+
+  .router-mark__replay {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-top: 14px;
+    padding: 8px 0;
+    border: 0;
+    background: transparent;
+    color: var(--text-dim);
+    font: 12px/1.5 var(--font-mono);
+    transition: color 180ms ease;
+  }
+
+  .router-mark__replay:hover {
+    color: var(--accent);
+  }
+</style>
+
+<script>
+  (() => {
+    const marks = document.querySelectorAll<HTMLElement>("[data-router-mark]");
+
+    marks.forEach((mark) => {
+      const replay = mark.querySelector<HTMLButtonElement>(".router-mark__replay");
+      const overlays = Array.from(mark.querySelectorAll<SVGPathElement>("[data-route-overlay]"));
+      const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+      let activeAnimations: Animation[] = [];
+
+      const cancelActiveAnimations = () => {
+        activeAnimations.forEach((animation) => animation.cancel());
+        activeAnimations = [];
+      };
+
+      const showStaticMark = () => {
+        overlays.forEach((overlay) => overlay.style.setProperty("stroke-dashoffset", "0"));
+      };
+
+      const playRoute = () => {
+        cancelActiveAnimations();
+
+        if (motionPreference.matches) {
+          showStaticMark();
+          return;
+        }
+
+        activeAnimations = overlays.map((overlay, index) => {
+          overlay.style.setProperty("stroke-dashoffset", "1");
+          return overlay.animate(
+            [{ strokeDashoffset: "1" }, { strokeDashoffset: "0" }],
+            {
+              duration: 1800,
+              delay: index * 140,
+              easing: "cubic-bezier(0.65, 0, 0.35, 1)",
+              fill: "forwards",
+            },
+          );
+        });
+      };
+
+      const handleMotionPreferenceChange = () => {
+        cancelActiveAnimations();
+        showStaticMark();
+      };
+
+      replay?.addEventListener("click", playRoute);
+      motionPreference.addEventListener("change", handleMotionPreferenceChange);
+
+      if (motionPreference.matches) {
+        showStaticMark();
+      } else {
+        playRoute();
+      }
+    });
+  })();
+</script>

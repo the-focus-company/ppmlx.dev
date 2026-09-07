@@ -618,15 +618,10 @@ import Footer from "../components/Footer.astro";
     border-color: var(--accent-bright);
     background: var(--accent);
     box-shadow: 0 0 8px rgba(212, 131, 60, 0.4);
-    animation: pulse-marker 2s ease-in-out infinite;
   }
   .tl-item.pending .tl-marker {
     border-color: var(--text-dim);
     background: transparent;
-  }
-  @keyframes pulse-marker {
-    0%, 100% { box-shadow: 0 0 8px rgba(212, 131, 60, 0.4); }
-    50% { box-shadow: 0 0 16px rgba(212, 131, 60, 0.6); }
   }
   .tl-content h3 {
     font-family: var(--font-mono);

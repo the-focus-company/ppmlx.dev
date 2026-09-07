@@ -1,34 +1,49 @@
 ---
 import { release } from "../data/release";
+import RouterMark from "./RouterMark.astro";
 ---
 <section class="hero container" aria-labelledby="hero-title">
-  <p class="intro-label">An open-source connection for your AI tools</p>
-  <h1 id="hero-title">All your models.<br />One connection.</h1>
-  <p class="lede">Connect your apps to the providers, subscriptions, and local models you choose. Set the routes. Keep your context.</p>
-  <div class="hero-actions">
-    <div class="install-command"><span aria-hidden="true">$</span><code>uv tool install ppmlx</code><button type="button" data-copy="uv tool install ppmlx" aria-label="Copy install command"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M15 8V4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h4"/></svg></button></div>
-    <a href="#quickstart" class="setup-link">Get started <span aria-hidden="true">↗</span></a>
+  <div class="hero-copy">
+    <h1 id="hero-title">One local router.<br />All your models.</h1>
+    <p class="lede">Use the models and subscriptions you choose. Set the routes. Keep your context on your Mac.</p>
+    <div class="hero-actions">
+      <button class="install-command" type="button" data-copy="uv tool install ppmlx" aria-label="Copy install command">
+        <code>uv tool install ppmlx</code>
+        <span class="copy-icons" aria-hidden="true"><svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M15 8V4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h4"/></svg><svg class="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m5 12 4 4L19 6"/></svg></span>
+      </button>
+      <a href="#quickstart" class="quiet-link setup-link">Get started</a>
+    </div>
+    <p class="copy-status" role="status" aria-live="polite"></p>
+    <p class="release-meta"><a href="https://github.com/wydrox/ppmlx/blob/main/CHANGELOG.md">v{release} development</a><span>Apple Silicon</span></p>
   </div>
-  <p class="copy-status" role="status" aria-live="polite"></p>
-  <div class="release-meta"><a href="https://github.com/wydrox/ppmlx/blob/main/CHANGELOG.md">v{release} <span>development</span></a><span>Apple Silicon</span><span>MIT license</span></div>
+  <div class="hero-art"><RouterMark /></div>
 </section>
 <style>
-.hero { padding-top: 52px; padding-bottom: 44px; }
-.intro-label { font: 12px/1.6 var(--font-mono); color: var(--text-dim); margin-bottom: 22px; }
-h1 { font-size: clamp(38px, 5vw, 58px); line-height: 1.12; letter-spacing: -.045em; font-weight: 450; margin-bottom: 24px; }
-.lede { max-width: 620px; font-size: 18px; line-height: 1.75; margin-bottom: 28px; }
-.hero-actions { display: flex; flex-wrap: wrap; gap: 18px 26px; align-items: center; }
-.install-command { display: inline-flex; align-items: center; gap: 12px; min-height: 48px; padding-left: 16px; border: 1px solid var(--border); border-radius: 9px; background: var(--bg-surface); }
-.install-command > span { color: var(--text-dim); font: 13px var(--font-mono); }
-.install-command code { font-size: 13px; color: var(--text-primary); }
-.install-command button { display: flex; align-items: center; justify-content: center; width: 44px; min-height: 46px; border: 0; background: transparent; color: var(--text-secondary); border-radius: 0 9px 9px 0; }
-.install-command button:hover { color: var(--text-primary); background: var(--bg-elevated); }
-.setup-link { color: var(--text-primary); text-decoration: none; font-size: 13px; }
-.setup-link span { margin-left: 5px; color: var(--text-dim); }
-.setup-link:hover { text-decoration: underline; }
-.copy-status { min-height: 18px; font-size: 12px; color: var(--teal); margin: 5px 0 0; }
-.release-meta { display: flex; gap: 10px 22px; flex-wrap: wrap; align-items: center; font: 11px/1.7 var(--font-mono); color: var(--text-dim); margin-top: 8px; }
-.release-meta a { color: var(--text-secondary); text-decoration: none; }
-.release-meta a span { margin-left: 6px; color: var(--text-dim); }
-@media (max-width: 640px) { .hero { padding-top: 32px; padding-bottom: 32px; } .lede { font-size: 16px; } }
+.hero { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 56px; align-items: center; padding-top: clamp(72px, 9vw, 116px); padding-bottom: clamp(96px, 12vw, 160px); }
+h1 { font-size: clamp(42px, 5.25vw, 64px); line-height: 1.1; letter-spacing: -.055em; font-weight: 450; margin-bottom: 30px; }
+.lede { max-width: 450px; font-size: 18px; line-height: 1.8; margin-bottom: 34px; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: center; }
+.install-command { display: inline-flex; align-items: center; gap: 24px; min-height: 48px; padding: 0 17px; border: 1px solid var(--border); border-radius: 6px; background: transparent; color: var(--text-primary); transition: border-color 180ms ease, background-color 180ms ease, transform 180ms ease; }
+.install-command code { font-size: 12px; }
+.install-command:hover { border-color: var(--text-dim); background: var(--bg-surface); }
+.install-command:active { transform: translateY(1px); }
+.install-command:disabled { cursor: wait; }
+.copy-icons { display: grid; color: var(--text-dim); }
+.copy-icons svg { grid-area: 1 / 1; transition: opacity 180ms ease, transform 180ms ease; }
+.check-icon { opacity: 0; transform: scale(.8); color: var(--teal); }
+[data-copy-state="copied"] .copy-icon { opacity: 0; transform: scale(.8); }
+[data-copy-state="copied"] .check-icon { opacity: 1; transform: scale(1); }
+.setup-link { color: var(--text-primary); font-size: 13px; }
+.copy-status { min-height: 20px; font-size: 12px; color: var(--teal); margin: 8px 0 0; }
+.release-meta { display: flex; gap: 10px 22px; flex-wrap: wrap; align-items: center; font-size: 11px; color: var(--text-dim); margin: 4px 0 0; }
+.release-meta a { color: var(--text-dim); text-decoration: none; }
+.release-meta a:hover { color: var(--text-primary); }
+.hero-art { display: flex; justify-content: flex-end; min-width: 0; }
+@media (max-width: 760px) {
+  .hero { grid-template-columns: 1fr; gap: 24px; padding-top: 64px; padding-bottom: 72px; }
+  h1 { font-size: clamp(40px, 8.3vw, 60px); }
+  .lede { font-size: 16px; max-width: 480px; }
+  .hero-art { justify-content: center; }
+  .hero-art :global(figure) { max-width: 260px; }
+}
 </style>

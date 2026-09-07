@@ -67,11 +67,16 @@ const ogImage = new URL("/og-brand.png", Astro.site);
       document.querySelectorAll<HTMLButtonElement>("button[data-copy]").forEach((button) => {
         button.addEventListener("click", async () => {
           const status = document.querySelector<HTMLElement>(".copy-status");
+          button.disabled = true;
+          delete button.dataset.copyState;
           try {
             await navigator.clipboard.writeText(button.dataset.copy || "");
+            button.dataset.copyState = "copied";
             if (status) status.textContent = "Command copied.";
           } catch {
             if (status) status.textContent = "Copy failed. Select and copy the command above.";
+          } finally {
+            button.disabled = false;
           }
         });
       });

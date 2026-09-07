@@ -19,7 +19,7 @@ h1, h2, h3 { line-height: 1.25; font-weight: 500; }
 h2 { font-size: clamp(25px, 3vw, 32px); letter-spacing: -.03em; }
 h3 { font-size: 19px; letter-spacing: -.015em; }
 p { color: var(--text-secondary); }
-a { color: var(--accent); text-underline-offset: 4px; }
+a { color: var(--accent); text-underline-offset: 4px; transition: color 180ms ease; }
 a:hover { color: var(--accent-bright); }
 button, input, select, textarea { font: inherit; }
 button { cursor: pointer; }
@@ -41,5 +41,12 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .skip-link { position: absolute; left: var(--gutter); top: -100px; z-index: 2000; padding: 10px 16px; background: var(--bg-elevated); }
 .skip-link:focus { top: 8px; }
 .reveal { opacity: 1; transform: none; }
-*, *::before, *::after { animation: none !important; scroll-behavior: auto !important; }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+html { scroll-behavior: smooth; }
+.quiet-link { display: inline-block; color: var(--accent); font-size: 13px; text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 5px; transition: color 180ms ease, text-decoration-color 180ms ease; }
+.quiet-link:hover, .quiet-link:focus-visible { color: var(--accent-bright); text-decoration-color: currentColor; }
+.btn-primary, .btn-secondary { transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease; }
+.btn-primary:active, .btn-secondary:active { transform: translateY(1px); }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
