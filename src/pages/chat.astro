@@ -20,7 +20,7 @@ import Footer from "../components/Footer.astro";
 
     <div class="chat-area" id="chat-area">
       <div class="empty-state">
-        <h2>ppmlx Chat</h2>
+        <h1>ppmlx Chat</h1>
         <p>Connect to your local ppmlx server and start chatting.</p>
         <p class="hint">Make sure <code>ppmlx serve</code> is running.</p>
       </div>
@@ -38,51 +38,57 @@ import Footer from "../components/Footer.astro";
   .chat-page {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 60px);
+    min-height: calc(100vh - 76px);
     max-width: 900px;
+    width: 100%;
     margin: 0 auto;
+    padding: 32px 32px 48px;
   }
   .topbar {
     display: flex;
     gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid #333;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
     align-items: center;
+    flex-wrap: wrap;
   }
   .topbar select, .topbar input {
     padding: 0.4rem 0.6rem;
-    border: 1px solid #333;
+    border: 1px solid var(--border);
     border-radius: 4px;
-    background: #1a1a2e;
-    color: #eee;
+    background: var(--bg-surface);
+    color: var(--text-primary);
     font-size: 0.85rem;
   }
-  .topbar select { flex: 1; }
-  .topbar input { width: 250px; }
+  .topbar select { flex: 1 1 220px; min-width: 0; }
+  .topbar input { width: 250px; min-width: 0; }
   .topbar button {
     padding: 0.4rem 0.8rem;
-    background: #2d3436;
-    color: #dfe6e9;
-    border: 1px solid #636e72;
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
     border-radius: 4px;
     cursor: pointer;
   }
   .chat-area {
     flex: 1;
+    min-height: 360px;
     overflow-y: auto;
-    padding: 1rem;
+    padding: 1.5rem 0;
   }
   .empty-state {
     text-align: center;
-    color: #888;
+    color: var(--text-secondary);
     margin-top: 20vh;
   }
+  .empty-state h1 { font-size: 1.5rem; margin-bottom: 1rem; }
   .empty-state code {
-    background: #1a1a2e;
+    background: var(--bg-elevated);
+    color: var(--text-primary);
     padding: 0.2em 0.5em;
     border-radius: 4px;
   }
-  .hint { font-size: 0.85rem; color: #666; }
+  .hint { font-size: 0.85rem; color: var(--text-dim); }
   .message {
     margin-bottom: 1rem;
     padding: 0.75rem 1rem;
@@ -90,42 +96,51 @@ import Footer from "../components/Footer.astro";
     max-width: 80%;
     line-height: 1.5;
     white-space: pre-wrap;
+    overflow-wrap: anywhere;
   }
   .message.user {
-    background: #6c5ce7;
+    background: var(--accent);
     color: white;
     margin-left: auto;
   }
   .message.assistant {
-    background: #1a1a2e;
-    color: #eee;
-    border: 1px solid #333;
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
   }
   .input-area {
     display: flex;
     gap: 0.5rem;
-    padding: 1rem;
-    border-top: 1px solid #333;
+    padding: 1.5rem 0 0;
+    border-top: 1px solid var(--border);
   }
   .input-area textarea {
     flex: 1;
     padding: 0.6rem;
-    border: 1px solid #333;
+    border: 1px solid var(--border);
     border-radius: 8px;
-    background: #1a1a2e;
-    color: #eee;
+    background: var(--bg-surface);
+    color: var(--text-primary);
     font-family: inherit;
     font-size: 0.95rem;
     resize: none;
+    min-width: 0;
   }
   .send-btn {
     padding: 0.6rem 1.5rem;
-    background: #6c5ce7;
+    background: var(--accent);
     color: white;
-    border: none;
+    border: 1px solid var(--accent);
     border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
+  }
+  @media (max-width: 640px) {
+    .chat-page { min-height: calc(100vh - 128px); padding: 28px 22px 40px; }
+    .topbar select { flex-basis: 100%; }
+    .topbar input { flex: 1 1 auto; width: auto; }
+    .input-area { flex-direction: column; }
+    .send-btn { width: 100%; }
   }
 </style>
 
@@ -221,7 +236,7 @@ import Footer from "../components/Footer.astro";
   });
   clearBtn.addEventListener('click', () => {
     messages = [];
-    chatArea.innerHTML = '<div class="empty-state"><h2>ppmlx Chat</h2><p>Start a new conversation.</p></div>';
+    chatArea.innerHTML = '<div class="empty-state"><h1>ppmlx Chat</h1><p>Start a new conversation.</p></div>';
   });
   serverUrlInput.addEventListener('change', loadModels);
   loadModels();
