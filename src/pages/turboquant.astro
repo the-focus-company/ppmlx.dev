@@ -771,8 +771,7 @@ import Footer from "../components/Footer.astro";
       "tq-qjl": { color: "#e8a04c", fill: true, dash: [6, 4] }
     };
 
-    var animProgress = 0;
-    var animDone = false;
+    var animProgress = 1;
 
     function resize() {
       var w = canvas.parentElement.clientWidth;
@@ -799,7 +798,7 @@ import Footer from "../components/Footer.astro";
       ctx.clearRect(0, 0, cw(), ch());
 
       // Grid lines
-      ctx.strokeStyle = "#1e2229";
+      ctx.strokeStyle = "#dce2ea";
       ctx.lineWidth = 1;
       for (var i = 2; i <= 9; i++) {
         var gx = xScale(i);
@@ -875,7 +874,7 @@ import Footer from "../components/Footer.astro";
           ctx.fillStyle = ds.color;
           ctx.fill();
           if (d.series === "tq-qjl") {
-            ctx.strokeStyle = "#07080a";
+            ctx.strokeStyle = "#182338";
             ctx.lineWidth = 2;
             ctx.stroke();
           }
@@ -917,26 +916,7 @@ import Footer from "../components/Footer.astro";
 
     resize();
 
-    // Animate on scroll into view
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting && !animDone) {
-          animDone = true;
-          var startTime = performance.now();
-          var duration = 900;
-          function animate(now) {
-            var t = Math.min(1, (now - startTime) / duration);
-            animProgress = 1 - Math.pow(1 - t, 3);
-            draw();
-            if (t < 1) requestAnimationFrame(animate);
-          }
-          requestAnimationFrame(animate);
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.2 });
-
-    observer.observe(canvas);
+    draw();
 
     window.addEventListener("resize", function() {
       resize();
