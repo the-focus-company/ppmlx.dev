@@ -28,39 +28,34 @@ const ogImage = new URL("/og-image.png", Astro.site);
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="ppmlx — local models for coding agents on Apple Silicon" />
+    <meta property="og:image:alt" content="ppmlx — your apps, your models, your routes" />
     <meta property="og:site_name" content="ppmlx" />
     <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
-    <meta name="twitter:image:alt" content="ppmlx — local models for coding agents on Apple Silicon" />
+    <meta name="twitter:image:alt" content="ppmlx — your apps, your models, your routes" />
     <meta name="keywords" content="MLX, Apple Silicon, LLM, local inference, Ollama alternative, OpenAI API, macOS, M1, M2, M3, M4, Metal GPU, ppmlx" />
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "ppmlx",
       "url": "https://ppmlx.dev",
-      "description": "Local MLX inference for Apple Silicon, with model routing, tool normalization, and explicit memory for coding agents.",
+      "description": "Custom model routes, provider policies, local MLX inference, and a lightweight context graph for your AI tools.",
       "applicationCategory": "DeveloperApplication",
       "operatingSystem": "macOS (Apple Silicon)",
       "license": "https://opensource.org/licenses/MIT",
       "downloadUrl": "https://pypi.org/project/ppmlx/",
       "codeRepository": "https://github.com/wydrox/ppmlx",
       "softwareVersion": release,
-      "author": { "@type": "Organization", "name": "The Focus Company", "url": "https://thefocus.company" },
+      "author": { "@type": "Person", "name": "Rafał Wyderka", "alternateName": "@wydrox", "url": "https://github.com/wydrox" },
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
       "featureList": [
-        "MLX-native inference on Apple Silicon Metal GPU",
-        "Local OpenAI-compatible API with Chat Completions, Responses, and Embeddings",
-        "Local Anthropic Messages API",
-        "168+ curated model registry with human aliases",
-        "Local tool calling for coding agents",
-        "Vision model support via mlx-vlm",
-        "Interactive TUI model picker and chat REPL",
-        "Experimental local temporal memory graph",
-        "Published Apple Silicon benchmarks against Ollama"
+        "Custom routes for compatible apps, providers, and models",
+        "Explicit candidate order and fallback policies",
+        "Built-in local MLX inference on Apple Silicon",
+        "Experimental local context graph with explicit read grants"
       ]
     })} />
   </head>

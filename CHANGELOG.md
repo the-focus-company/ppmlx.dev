@@ -2,6 +2,14 @@
 
 This file lists changes for each website version.
 
+## 0.11.1 — 2026-09-07
+
+- Added a softer dark design with clear type and quiet controls.
+- Updated the copy to explain custom routes, provider policies, local models, and private memory.
+- Added route examples that open on click.
+- Made page widths and margins consistent across all four pages.
+- Added credit for Rafał Wyderka (@wydrox) in the footer and page metadata.
+
 ## 0.11.0 (development)
 
 - Updated the homepage with a local-first message and quick-start commands.

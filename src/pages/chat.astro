@@ -39,10 +39,11 @@ import Footer from "../components/Footer.astro";
     display: flex;
     flex-direction: column;
     min-height: calc(100vh - 76px);
-    max-width: 900px;
+    max-width: var(--content-max);
     width: 100%;
-    margin: 0 auto;
-    padding: 32px 32px 48px;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    padding-block: var(--section-gap);
   }
   .topbar {
     display: flex;
@@ -100,7 +101,7 @@ import Footer from "../components/Footer.astro";
   }
   .message.user {
     background: var(--accent);
-    color: white;
+    color: var(--bg-deep);
     margin-left: auto;
   }
   .message.assistant {
@@ -129,14 +130,14 @@ import Footer from "../components/Footer.astro";
   .send-btn {
     padding: 0.6rem 1.5rem;
     background: var(--accent);
-    color: white;
+    color: var(--bg-deep);
     border: 1px solid var(--accent);
     border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
   }
   @media (max-width: 640px) {
-    .chat-page { min-height: calc(100vh - 128px); padding: 28px 22px 40px; }
+    .chat-page { min-height: calc(100vh - 128px); padding-block: var(--section-gap); }
     .topbar select { flex-basis: 100%; }
     .topbar input { flex: 1 1 auto; width: auto; }
     .input-area { flex-direction: column; }

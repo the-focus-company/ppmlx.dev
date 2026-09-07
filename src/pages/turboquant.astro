@@ -235,7 +235,7 @@ import Footer from "../components/Footer.astro";
     z-index: 1;
   }
   .hero-section {
-    padding: calc(100px + var(--section-gap)) 0 var(--section-gap);
+    padding: var(--section-gap) 0;
     text-align: center;
   }
   .tq-badge {
@@ -798,7 +798,7 @@ import Footer from "../components/Footer.astro";
       ctx.clearRect(0, 0, cw(), ch());
 
       // Grid lines
-      ctx.strokeStyle = "#dce2ea";
+      ctx.strokeStyle = "#303136";
       ctx.lineWidth = 1;
       for (var i = 2; i <= 9; i++) {
         var gx = xScale(i);
@@ -874,7 +874,7 @@ import Footer from "../components/Footer.astro";
           ctx.fillStyle = ds.color;
           ctx.fill();
           if (d.series === "tq-qjl") {
-            ctx.strokeStyle = "#182338";
+            ctx.strokeStyle = "#111214";
             ctx.lineWidth = 2;
             ctx.stroke();
           }

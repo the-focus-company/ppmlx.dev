@@ -1,19 +1,21 @@
 <header class="site-header">
   <nav class="container" aria-label="Main navigation">
-    <a href="/" class="nav-logo" aria-label="ppmlx home">ppmlx</a>
+    <a href="/" class="nav-logo" aria-label="ppmlx home"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7h6l4 10h6M4 17h6l4-10h6"/><circle cx="4" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="4" cy="17" r="2" fill="currentColor" stroke="none"/><circle cx="20" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="20" cy="17" r="2" fill="currentColor" stroke="none"/></svg>ppmlx</a>
     <ul class="nav-links">
-      <li><a href="/#quickstart">Get started</a></li>
-      <li><a href="https://github.com/wydrox/ppmlx#readme">Documentation</a></li>
-      <li><a href="https://github.com/wydrox/ppmlx">GitHub <svg aria-hidden="true" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor"><path d="M5 3h8v8M13 3 3 13"/></svg></a></li>
+      <li><a href="/#routes">Routes</a></li>
+      <li><a href="/#memory">Memory</a></li>
+      <li><a href="https://github.com/wydrox/ppmlx#readme">Docs</a></li>
+      <li><a href="https://github.com/wydrox/ppmlx">GitHub</a></li>
     </ul>
   </nav>
 </header>
 <style>
-.site-header { border-bottom: 1px solid var(--border); background: white; }
-nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 76px; }
-.nav-logo { color: var(--text-primary); font: 700 26px var(--font-mono); letter-spacing: -1.5px; text-decoration: none; }
-.nav-links { display: flex; flex-wrap: wrap; gap: 8px 26px; align-items: center; list-style: none; padding: 0; margin: 0; }
-.nav-links a { display: inline-flex; align-items: center; gap: 5px; padding: 10px 0; color: var(--text-secondary); font-size: 14px; text-decoration: none; }
-.nav-links a:hover { color: var(--accent); text-decoration: underline; }
-@media (max-width: 540px) { nav { align-items: flex-start; flex-direction: column; gap: 4px; padding-top: 18px; padding-bottom: 10px; } .nav-links { width: 100%; justify-content: space-between; gap: 8px 14px; } .nav-links a { font-size: 13px; } }
+nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 88px; }
+.nav-logo { display: inline-flex; align-items: center; gap: 12px; color: var(--text-primary); font: 500 21px var(--font-mono); letter-spacing: -1px; text-decoration: none; }
+.nav-logo svg { color: var(--accent); }
+.nav-links { display: flex; flex-wrap: wrap; gap: 8px 28px; align-items: center; list-style: none; padding: 0; margin: 0; }
+.nav-links a { display: block; padding-block: 10px; color: var(--text-secondary); font: 12px/1.6 var(--font-mono); text-decoration: none; }
+.nav-links a:hover { color: var(--text-primary); }
+@media (max-width: 540px) { nav { gap: 16px; flex-wrap: wrap; padding-block: 20px; } .nav-links { gap: 16px; } .nav-logo { font-size: 18px; gap: 8px; } .nav-logo svg { width: 20px; } }
+@media (max-width: 390px) { nav { flex-direction: column; align-items: flex-start; gap: 10px; } .nav-links { width: 100%; justify-content: space-between; } }
 </style>

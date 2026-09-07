@@ -59,10 +59,11 @@ import Footer from "../components/Footer.astro";
 
 <style>
   .playground-page {
-    max-width: 1200px;
+    max-width: var(--content-max);
     width: 100%;
-    margin: 0 auto;
-    padding: 48px 32px 64px;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    padding-block: var(--section-gap);
   }
   .hero-section {
     text-align: center;
@@ -158,13 +159,13 @@ import Footer from "../components/Footer.astro";
   }
   .btn.primary {
     background: var(--accent);
-    color: white;
+    color: var(--bg-deep);
     border-color: var(--accent);
   }
   .btn.secondary {
     background: var(--bg-surface);
     color: var(--text-primary);
-    border-color: #bcc7d5;
+    border-color: var(--border);
   }
   .compat-results {
     margin-top: 2rem;
@@ -184,7 +185,7 @@ import Footer from "../components/Footer.astro";
   }
 
   @media (max-width: 768px) {
-    .playground-page { padding: 36px 22px 48px; }
+    .playground-page { padding-block: var(--section-gap); }
     .hero-section { margin-bottom: 36px; }
     .playground-container {
       grid-template-columns: 1fr;

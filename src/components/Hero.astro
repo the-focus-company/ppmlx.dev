@@ -2,52 +2,33 @@
 import { release } from "../data/release";
 ---
 <section class="hero container" aria-labelledby="hero-title">
-  <div class="intro">
-    <a class="release" href="https://github.com/the-focus-company/ppmlx.dev/blob/main/CHANGELOG.md">Development v{release} <span>Read the changelog</span></a>
-    <h1 id="hero-title">Local models.<br />A familiar API.</h1>
-    <p class="lede">Run language models on Apple Silicon with MLX. Connect your editor, coding agent, or application through one local server.</p>
-    <div class="hero-actions">
-      <a href="#quickstart" class="btn-primary">Get started</a>
-      <a href="https://github.com/wydrox/ppmlx" class="btn-secondary">View source</a>
-    </div>
-    <p class="requirements">macOS on Apple Silicon <span aria-hidden="true">/</span> Python 3.11–3.12 <span aria-hidden="true">/</span> MIT license</p>
+  <p class="intro-label">An open-source connection for your AI tools</p>
+  <h1 id="hero-title">All your models.<br />One connection.</h1>
+  <p class="lede">Connect your apps to the providers, subscriptions, and local models you choose. Set the routes. Keep your context.</p>
+  <div class="hero-actions">
+    <div class="install-command"><span aria-hidden="true">$</span><code>uv tool install ppmlx</code><button type="button" data-copy="uv tool install ppmlx" aria-label="Copy install command"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M15 8V4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h4"/></svg></button></div>
+    <a href="#quickstart" class="setup-link">Get started <span aria-hidden="true">↗</span></a>
   </div>
-  <aside id="quickstart" class="quickstart" aria-labelledby="quickstart-title">
-    <div class="code-header"><h2 id="quickstart-title">Quick start</h2><span>Terminal</span></div>
-    <div class="code-body">
-      <p class="code-note">Install ppmlx</p>
-      <div class="command"><code>uv tool install ppmlx</code><button type="button" data-copy="uv tool install ppmlx" aria-label="Copy install command">Copy</button></div>
-      <p class="code-note">Download a model</p>
-      <div class="command"><code>ppmlx pull llama3</code></div>
-      <p class="code-note">Start the local server</p>
-      <div class="command"><code>ppmlx serve --model llama3</code></div>
-      <p class="endpoint">http://localhost:6767/v1</p>
-      <p class="copy-status" role="status" aria-live="polite"></p>
-    </div>
-    <p class="code-footer">With pip: <code>pip install ppmlx</code><br /><a href="https://github.com/wydrox/ppmlx#install">Installation options</a></p>
-  </aside>
+  <p class="copy-status" role="status" aria-live="polite"></p>
+  <div class="release-meta"><a href="https://github.com/wydrox/ppmlx/blob/main/CHANGELOG.md">v{release} <span>development</span></a><span>Apple Silicon</span><span>MIT license</span></div>
 </section>
 <style>
-.hero { display: grid; grid-template-columns: 1.15fr 1fr; gap: 64px; align-items: center; padding-top: 72px; padding-bottom: 70px; }
-.release { display: inline-flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 12px; font-weight: 600; color: var(--text-secondary); text-decoration: none; margin-bottom: 24px; }
-.release span { border-left: 1px solid var(--border); padding-left: 10px; color: var(--accent); font-weight: 400; }
-h1 { font-size: clamp(40px, 4.5vw, 58px); letter-spacing: -.045em; line-height: 1.08; margin-bottom: 22px; }
-.lede { font-size: 18px; line-height: 1.65; max-width: 440px; margin-bottom: 26px; }
-.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
-.requirements { margin: 22px 0 0; font-size: 11px; line-height: 1.9; }
-.requirements span { margin: 0 5px; color: #b0bac7; }
-.quickstart { min-width: 0; border: 1px solid #ccd5e1; border-radius: 7px; background: var(--bg-surface); }
-.code-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px; border-bottom: 1px solid var(--border); }
-.code-header h2 { font-size: 14px; letter-spacing: 0; margin: 0; }
-.code-header span { font-size: 12px; color: var(--text-secondary); }
-.code-body { padding: 23px 22px 0; }
-.code-note { color: var(--text-secondary); font-size: 12px; margin-bottom: 6px; }
-.command { display: flex; gap: 8px; justify-content: space-between; align-items: center; min-height: 30px; margin-bottom: 20px; }
-.command code { font-size: 13px; overflow-wrap: anywhere; }
-.command button { flex-shrink: 0; padding: 4px 8px; color: var(--text-secondary); background: white; border: 1px solid #ccd5e1; border-radius: 4px; font-size: 11px; }
-.endpoint { margin: 4px 0 0; font: 12px/1.6 var(--font-mono); color: #216e58; overflow-wrap: anywhere; }
-.copy-status { min-height: 18px; margin: 4px 0; font-size: 11px; }
-.code-footer { border-top: 1px solid var(--border); padding: 13px 22px; margin: 0; font-size: 12px; line-height: 1.9; }
-@media (max-width: 850px) { .hero { gap: 32px; } }
-@media (max-width: 720px) { .hero { grid-template-columns: 1fr; padding-top: 40px; padding-bottom: 40px; gap: 32px; } .lede { max-width: 560px; } }
+.hero { padding-top: 52px; padding-bottom: 44px; }
+.intro-label { font: 12px/1.6 var(--font-mono); color: var(--text-dim); margin-bottom: 22px; }
+h1 { font-size: clamp(38px, 5vw, 58px); line-height: 1.12; letter-spacing: -.045em; font-weight: 450; margin-bottom: 24px; }
+.lede { max-width: 620px; font-size: 18px; line-height: 1.75; margin-bottom: 28px; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 18px 26px; align-items: center; }
+.install-command { display: inline-flex; align-items: center; gap: 12px; min-height: 48px; padding-left: 16px; border: 1px solid var(--border); border-radius: 9px; background: var(--bg-surface); }
+.install-command > span { color: var(--text-dim); font: 13px var(--font-mono); }
+.install-command code { font-size: 13px; color: var(--text-primary); }
+.install-command button { display: flex; align-items: center; justify-content: center; width: 44px; min-height: 46px; border: 0; background: transparent; color: var(--text-secondary); border-radius: 0 9px 9px 0; }
+.install-command button:hover { color: var(--text-primary); background: var(--bg-elevated); }
+.setup-link { color: var(--text-primary); text-decoration: none; font-size: 13px; }
+.setup-link span { margin-left: 5px; color: var(--text-dim); }
+.setup-link:hover { text-decoration: underline; }
+.copy-status { min-height: 18px; font-size: 12px; color: var(--teal); margin: 5px 0 0; }
+.release-meta { display: flex; gap: 10px 22px; flex-wrap: wrap; align-items: center; font: 11px/1.7 var(--font-mono); color: var(--text-dim); margin-top: 8px; }
+.release-meta a { color: var(--text-secondary); text-decoration: none; }
+.release-meta a span { margin-left: 6px; color: var(--text-dim); }
+@media (max-width: 640px) { .hero { padding-top: 32px; padding-bottom: 32px; } .lede { font-size: 16px; } }
 </style>

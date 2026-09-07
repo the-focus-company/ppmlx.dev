@@ -1,0 +1,51 @@
+---
+const routes = [
+  { name: "code.ppmlx", purpose: "Use your preferred account", description: "Keep one model name in your coding app. Choose the provider order behind it.", candidates: [ ["Claude Code", "Subscription"], ["OpenAI", "API"], ["MLX", "Local model"] ] },
+  { name: "fast.ppmlx", purpose: "Put a lower-cost model first", description: "Start with a smaller model. Select a fallback for the errors your policy permits.", candidates: [ ["OpenRouter", "Small model"], ["Grok", "Fallback model"], ["MLX", "Local model"] ] },
+  { name: "private.ppmlx", purpose: "Keep inference on your Mac", description: "Use a local-only route for sensitive work. The policy does not permit a remote fallback.", candidates: [ ["MLX", "Apple Silicon · local only"] ] },
+];
+---
+<section class="container" id="routes" aria-labelledby="routes-title">
+  <div class="route-window">
+    <div class="window-header"><h2 id="routes-title"><span aria-hidden="true">⌘</span> ppmlx / routes</h2><span>Policy examples</span></div>
+    <div class="route-intro"><span>One endpoint for your tools</span><code>localhost:6767</code></div>
+    <div class="routes-list">
+      {routes.map((route,index) => <details name="route-example" open={index===0}>
+        <summary><code>{route.name}</code><span class="route-purpose">{route.purpose}</span><span class="chevron" aria-hidden="true">+</span></summary>
+        <div class="route-detail"><p>{route.description}</p><ol>{route.candidates.map(([provider,label])=><li><strong>{provider}</strong><span>{label}</span></li>)}</ol></div>
+      </details>)}
+    </div>
+    <p class="window-note">Your app keeps its model name. You control the candidates and fallback rules.</p>
+  </div>
+  <p class="route-caption">Illustrative routes. Provider, model, and subscription support depends on the configured connection.</p>
+</section>
+<style>
+.route-window { overflow: hidden; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 20px 50px #00000018; }
+.window-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 17px 24px; border-bottom: 1px solid var(--border-subtle); }
+.window-header h2 { display: flex; align-items: center; gap: 12px; margin: 0; font: 12px/1.7 var(--font-mono); letter-spacing: 0; color: var(--text-secondary); }
+.window-header h2 span { color: var(--accent); font-size: 17px; }
+.window-header > span { color: var(--text-dim); font: 10px/1.5 var(--font-mono); }
+.route-intro { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 24px; font-size: 13px; }
+.route-intro > span { color: var(--text-secondary); }
+.route-intro code { color: var(--text-dim); font-size: 11px; }
+.routes-list { padding-inline: 12px; }
+details { border-top: 1px solid var(--border-subtle); }
+summary { list-style: none; display: grid; grid-template-columns: 160px 1fr 20px; align-items: center; gap: 24px; padding: 18px 12px; cursor: pointer; border-radius: 6px; }
+summary::-webkit-details-marker { display: none; }
+summary:hover { background: var(--bg-elevated); }
+summary code { color: var(--text-primary); font-size: 12px; }
+.route-purpose { color: var(--text-secondary); font-size: 12px; }
+.chevron { text-align: center; font: 16px var(--font-mono); color: var(--text-dim); }
+details[open] .chevron { transform: rotate(45deg); color: var(--accent); }
+details[open] summary code { color: var(--accent); }
+.route-detail { padding: 0 12px 24px; }
+.route-detail p { font-size: 12px; margin: 0 0 18px; }
+ol { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; counter-reset: route; padding: 0; margin: 0; }
+li { counter-increment: route; display: grid; grid-template-columns: 20px 1fr; align-content: center; gap: 0 10px; flex: 1; min-width: 140px; border: 1px solid var(--border); border-radius: 7px; padding: 13px 14px; background: var(--bg-deep); }
+li::before { content: counter(route); grid-row: span 2; color: var(--text-dim); font: 10px/2 var(--font-mono); }
+li strong { font-size: 12px; font-weight: 500; }
+li span { font: 10px/1.8 var(--font-mono); color: var(--text-dim); }
+.window-note { border-top: 1px solid var(--border-subtle); padding: 14px 24px; margin: 0; font-size: 11px; color: var(--text-dim); }
+.route-caption { margin: 12px 0 0; font-size: 11px; color: var(--text-dim); }
+@media (max-width: 640px) { summary { grid-template-columns: 1fr 20px; gap: 5px 12px; } .route-purpose { grid-column: 1; grid-row: 2; } .chevron { grid-column: 2; grid-row: 1 / span 2; } .window-header, .route-intro { padding: 16px; } .route-intro { align-items: flex-start; flex-direction: column; gap: 4px; } .routes-list { padding-inline: 4px; } .route-detail { padding-inline: 12px; } li { min-width: 100%; } .window-note { padding-inline: 16px; } }
+</style>
