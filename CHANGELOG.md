@@ -2,6 +2,13 @@
 
 This file lists changes for each website version.
 
+## 0.11.9 — 2026-09-07
+
+- Replaced the hero illustration with a continuous SVG background built from repeated routing marks.
+- Added a soft fade toward the headline and a separate mobile layout with the pattern below the text.
+- Matched navigation and content margins across screen sizes.
+- Kept automatic pause when hidden or offscreen, and a static view for reduced motion.
+
 ## 0.11.8 — 2026-09-07
 
 - Simplified the hero animation to one route that opens into three branches.

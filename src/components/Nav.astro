@@ -16,6 +16,5 @@ nav { display: flex; align-items: center; justify-content: space-between; gap: 2
 .nav-links { display: flex; flex-wrap: wrap; gap: 8px 28px; align-items: center; list-style: none; padding: 0; margin: 0; }
 .nav-links a { display: block; padding-block: 10px; color: var(--text-secondary); font: 12px/1.6 var(--font-mono); text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 6px; transition: color 180ms ease, text-decoration-color 180ms ease; }
 .nav-links a:hover, .nav-links a:focus-visible { color: var(--text-primary); text-decoration-color: currentColor; }
-@media (max-width: 540px) { nav { gap: 16px; flex-wrap: wrap; padding-block: 20px; } .nav-links { gap: 16px; } .nav-logo { font-size: 18px; gap: 8px; } .nav-logo svg { width: 20px; } }
-@media (max-width: 390px) { nav { flex-direction: column; align-items: flex-start; gap: 10px; } .nav-links { width: 100%; justify-content: space-between; } }
+@media (max-width: 760px) { nav { flex-direction: column; align-items: flex-start; gap: 12px; padding-top: 32px; } .nav-links { gap: 16px; } }
 </style>

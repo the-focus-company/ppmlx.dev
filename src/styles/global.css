@@ -9,8 +9,8 @@
   --font-display: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  --section-gap: clamp(48px, 7vw, 80px); --gutter: clamp(20px, 4vw, 40px);
-  --content-max: 1040px; --content-wide: var(--content-max);
+  --section-gap: clamp(48px, 7vw, 80px); --gutter: clamp(32px, 6.67vw, 80px);
+  --content-max: 1200px; --content-wide: var(--content-max);
 }
 html { scroll-padding-top: 32px; -webkit-font-smoothing: antialiased; }
 body { margin: 0; color: var(--text-primary); background: var(--bg-deep); font: 15px/1.75 var(--font-body); }
@@ -46,6 +46,7 @@ html { scroll-behavior: smooth; }
 .quiet-link:hover, .quiet-link:focus-visible { color: var(--accent-bright); text-decoration-color: currentColor; }
 .btn-primary, .btn-secondary { transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease; }
 .btn-primary:active, .btn-secondary:active { transform: translateY(1px); }
+@media (max-width: 760px) { :root { --gutter: 32px; } }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }

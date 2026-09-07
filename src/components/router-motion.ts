@@ -11,7 +11,7 @@ export function initRouterMotion(): void {
 
     if (!scene) return;
 
-    const morphs = Array.from(scene.querySelectorAll<SVGAnimationElement>("animate[data-route-morph]"));
+    const morphs = Array.from(scene.querySelectorAll<SVGAnimationElement>("[data-route-morph]"));
     const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
     let inViewport = false;
 

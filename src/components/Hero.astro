@@ -2,8 +2,10 @@
 import { release } from "../data/release";
 import RouterMark from "./RouterMark.astro";
 ---
-<section class="hero container" aria-labelledby="hero-title">
-  <div class="hero-copy">
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-art" aria-hidden="true"><RouterMark /></div>
+  <div class="hero-fade" aria-hidden="true"></div>
+  <div class="hero-copy container">
     <h1 id="hero-title">One local router.<br />All your models.</h1>
     <p class="lede">Use the models and subscriptions you choose. Set the routes. Keep your context on your Mac.</p>
     <div class="hero-actions">
@@ -16,10 +18,10 @@ import RouterMark from "./RouterMark.astro";
     <p class="copy-status" role="status" aria-live="polite"></p>
     <p class="release-meta"><a href="https://github.com/wydrox/ppmlx/blob/main/CHANGELOG.md">v{release} development</a><span>Apple Silicon</span></p>
   </div>
-  <div class="hero-art"><RouterMark /></div>
 </section>
 <style>
-.hero { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 56px; align-items: center; padding-top: clamp(72px, 9vw, 116px); padding-bottom: clamp(96px, 12vw, 160px); }
+.hero { position: relative; isolation: isolate; overflow: hidden; min-height: 632px; padding-top: 140px; padding-bottom: 140px; }
+.hero-copy { position: relative; z-index: 1; }
 h1 { font-size: clamp(42px, 5.25vw, 64px); line-height: 1.1; letter-spacing: -.055em; font-weight: 450; margin-bottom: 30px; }
 .lede { max-width: 450px; font-size: 18px; line-height: 1.8; margin-bottom: 34px; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: center; }
@@ -38,12 +40,15 @@ h1 { font-size: clamp(42px, 5.25vw, 64px); line-height: 1.1; letter-spacing: -.0
 .release-meta { display: flex; gap: 10px 22px; flex-wrap: wrap; align-items: center; font-size: 11px; color: var(--text-dim); margin: 4px 0 0; }
 .release-meta a { color: var(--text-dim); text-decoration: none; }
 .release-meta a:hover { color: var(--text-primary); }
-.hero-art { display: flex; justify-content: flex-end; min-width: 0; }
+.hero-art { position: absolute; inset: -88px 0 0; z-index: -2; pointer-events: none; }
+.hero-fade { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(90deg, var(--bg-deep) 0%, rgba(17,18,20,.94) 33%, transparent 65%); }
 @media (max-width: 760px) {
-  .hero { grid-template-columns: 1fr; gap: 24px; padding-top: 64px; padding-bottom: 72px; }
-  h1 { font-size: clamp(40px, 8.3vw, 60px); }
+  .hero { min-height: calc(100svh - 112px); padding-top: 64px; padding-bottom: 340px; }
+  h1 { font-size: clamp(36px, 10.75vw, 42px); }
   .lede { font-size: 16px; max-width: 480px; }
-  .hero-art { justify-content: center; }
-  .hero-art :global(figure) { max-width: 260px; }
+  .hero-actions { gap: 16px; }
+  .install-command { gap: 12px; padding-inline: 12px; }
+  .hero-art { inset: auto -30px -30px auto; width: 780px; height: 468px; opacity: .8; }
+  .hero-fade { background: linear-gradient(180deg, var(--bg-deep) 0%, rgba(17,18,20,.98) 35%, rgba(17,18,20,.25) 65%, transparent 100%); }
 }
 </style>
